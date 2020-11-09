@@ -1,0 +1,20 @@
+{
+  "name": "mohammadreza/amlak",
+  "description": "amlak",
+  "license": "MIT",
+  "authors": [
+      {
+          "name": "mohammadreza",
+          "email": "ultra2mh@gmail.com"
+      }
+  ],
+  "require": {
+      "illuminate/database": "^8.12",
+      "illuminate/events": "^8.12"
+  },
+  "autoload": {
+      "psr-4": { "App\\": "app" }
+  },
+  "require-dev": {
+  }
+}
