@@ -1,0 +1,380 @@
+<template>
+  <div class="container search-form">
+    <form @submit.prevent="handleSubmit">
+      <div class="row">
+        <div class="col">
+          <div class="form-row">
+            <div class="form-group col-md-6">
+              <label for="province_id">استان</label>
+              <select
+                id="province_id"
+                @change="getCityByProvince($event)"
+                class="form-control"
+              >
+                <option
+                  :value="item.id"
+                  v-for="(item, index) in provinces"
+                  :key="index"
+                >
+                  {{ item.name }}
+                </option>
+                <option>...</option>
+              </select>
+            </div>
+            <div class="form-group col-md-6">
+              <label for="city_id">شهر</label>
+              <select
+                id="city_id"
+                @change="changeCity($event)"
+                class="form-control"
+              >
+                <option
+                  v-for="(item, index) in cities"
+                  :value="item.id"
+                  :key="index"
+                >
+                  {{ item.name }}
+                </option>
+                <option>...</option>
+              </select>
+            </div>
+          </div>
+          <div class="form-group">
+            <label for="address">جستجو در نشانی</label>
+            <textarea
+              class="form-control"
+              name="address"
+              v-model="form.address"
+              id="address"
+              rows="3"
+            ></textarea>
+          </div>
+        </div>
+
+        <div class="col">
+          <div class="form-group">
+            <label for="from_build_time">تاریخ ساخت بنا</label>
+            <input
+              type="text"
+              name="from_build_time"
+              v-model="form.from_build_time"
+              class="form-control"
+              id="from_build_time"
+              placeholder="تاریخ ساخت بنا"
+            />
+          </div>
+          تا
+          <div class="form-group">
+            <label for="to_build_time">تاریخ ساخت بنا</label>
+            <input
+              type="text"
+              name="to_build_time"
+              v-model="form.to_build_time"
+              class="form-control"
+              id="to_build_time"
+              placeholder="تاریخ ساخت بنا"
+            />
+          </div>
+          <div class="form-row">
+            <div class="form-group col-md-3">
+              <label for="category">دسته</label>
+              <select
+                id="category"
+                @change="changeCategory($event)"
+                name="property_category_id"
+                class="form-control"
+              >
+                <option
+                  :value="item.id"
+                  v-for="(item, index) in categories"
+                  :key="index"
+                >
+                  {{ item.name }}
+                </option>
+                <option value="">مشخص نشده</option>
+              </select>
+            </div>
+            <div class="form-group col-md-3">
+              <label for="sell_type">نوع معامله</label>
+
+              <div
+                class="form-check"
+                v-for="(item, index) in sellTypes"
+                :key="index"
+              >
+                <input
+                  class="form-check-input"
+                  v-model="form.special"
+                  @change="changeSellType($event)"
+                  type="checkbox"
+                  :id="'gridCheck' + index"
+                  :value="item.id"
+                />
+                <label class="form-check-label" name="special" :for="'gridCheck'+index">
+                  {{ item.name }}
+                </label>
+              </div>
+            </div>
+            <div class="form-group col-md-3">
+              <label for="feature">ویژگی ملک</label>
+              <select
+                id="feature"
+                @change="changeFeature($event)"
+                name="feature_id"
+                class="form-control"
+              >
+                <option
+                  v-for="(item, index) in features"
+                  :key="index"
+                  :value="item.id"
+                >
+                  {{ item.name }}
+                </option>
+                <option value="">مشخص نشده</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="form-row mt-3 mb-3">
+            <div class="form-group col">
+              <label for="from_price">قیمت ملک</label>
+              <input
+                type="number"
+                name="from_price"
+                class="form-control"
+                id="from_price"
+                v-model="form.from_price"
+                placeholder="قیمت"
+              />
+            </div>
+            تا
+            <div class="form-group col">
+              <label for="price">قیمت ملک</label>
+              <input
+                type="number"
+                name="to_price"
+                class="form-control"
+                id="to_price"
+                v-model="form.to_price"
+                placeholder="قیمت"
+              />
+            </div>
+
+            <div class="form-group col">
+              <label for="from_rent_price">قیمت اجاره</label>
+              <input
+                type="text"
+                name="from_rent_price"
+                class="form-control"
+                id="from_rent_price"
+                v-model="form.from_rent_price"
+                placeholder="قیمت اجاره"
+              />
+            </div>
+            تا
+            <div class="form-group col">
+              <label for="to_rent_price">قیمت اجاره</label>
+              <input
+                type="text"
+                name="to_rent_price"
+                class="form-control"
+                id="to_rent_price"
+                v-model="form.to_rent_price"
+                placeholder="قیمت اجاره"
+              />
+            </div>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group col">
+              <label for="from_size">متراژ</label>
+              <input
+                type="number"
+                name="from_size"
+                class="form-control"
+                id="from_size"
+                v-model="form.from_size"
+                placeholder="متراژ"
+              />
+            </div>
+            تا
+            <div class="form-group col">
+              <label for="to_size">متراژ</label>
+              <input
+                type="number"
+                name="to_size"
+                class="form-control"
+                id="to_size"
+                v-model="form.to_size"
+                placeholder="متراژ"
+              />
+            </div>
+          </div>
+          <div class="form-row">
+            <div class="form-group col">
+              <label for="bed_count">تعداد خواب</label>
+              <input
+                type="number"
+                name="bed_count"
+                v-model="form.bed_count"
+                class="form-control"
+                id="bed_count"
+                placeholder="تعداد اتاق خواب"
+              />
+            </div>
+            <div class="form-group col">
+              <label for="bath_count">تعداد حمام</label>
+              <input
+                type="number"
+                name="bath_count"
+                v-model="form.bath_count"
+                class="form-control"
+                id="bath_count"
+                placeholder="تعداد حمام"
+              />
+            </div>
+            <div class="form-group col">
+              <label for="parking_count">تعداد پارکینگ</label>
+              <input
+                type="number"
+                name="parking_count"
+                v-model="form.parking_count"
+                class="form-control"
+                id="parking_count"
+                placeholder="تعداد پارکینگ"
+              />
+            </div>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group col">
+              <label for="owner">مالک</label>
+              <input
+                type="text"
+                name="owner"
+                v-model="form.owner"
+                class="form-control"
+                id="owner"
+                placeholder="نام مالک"
+              />
+            </div>
+          </div>
+
+          <div class="form-group">
+            <div class="form-check">
+              <input
+                class="form-check-input"
+                v-model="form.special"
+                type="checkbox"
+                id="gridCheck"
+              />
+              <label class="form-check-label" name="special" for="gridCheck">
+                ویژه؟
+              </label>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <button type="submit" class="btn btn-lg btn-primary">جستجو</button>
+    </form>
+  </div>
+</template>
+
+<script>
+import api from "../services/api";
+export default {
+  data() {
+    return {
+      categories: [],
+      sellTypes: [],
+      provinces: [],
+      features: [],
+      cities: [],
+      form: {
+        from_build_time: "",
+        to_build_time: "",
+        from_price: "",
+        to_price: "",
+        from_rent_price: "",
+        to_rent_price: "",
+        from_size: "",
+        to_size: "",
+        bed_count: "",
+        bath_count: "",
+        parking_count: "",
+        owner: "",
+        special: "",
+        address: "",
+        property_category_id: "",
+        sell_type_id: "",
+        feature_id: "",
+        city_id: "",
+      },
+    };
+  },
+  mounted() {
+    api
+      .get("api/v1/data")
+      .then((response) => {
+        this.categories = response.data.categories;
+        this.sellTypes = response.data.sellTypes;
+        this.provinces = response.data.provinces;
+        this.features = response.data.features;
+      })
+      .catch((error) => console.log(error));
+  },
+  methods: {
+    changeCategory(e) {
+      this.form.property_category_id = e.target.value;
+    },
+    changeSellType(e) {
+      this.form.sell_type_id = e.target.value;
+    },
+    changeFeature(e) {
+      this.form.feature_id = e.target.value;
+    },
+    changeCity(e) {
+      this.form.city_id = e.target.value;
+    },
+    getCityByProvince(e) {
+      let id = e.target.value;
+      this.form.province_id = id;
+      api
+        .get(`api/v1/data/get-cities?province=${id}`)
+        .then((response) => {
+          this.cities = response.data.cities;
+        })
+        .catch((error) => console.log(error));
+    },
+    handleSubmit() {
+      let form = this.form;
+      api
+        .post("api/v1/data/search", {
+          ...form,
+        })
+        .then((res) => {
+          console.log(res.data);
+        })
+        .catch((e) => {
+          console.log(e);
+        });
+    },
+  },
+};
+</script>
+
+<style scoped>
+* {
+  font-family: "Irs";
+}
+.search-form {
+  font-family: "Irs";
+  direction: rtl;
+  text-align: right;
+  min-width: 50%;
+  padding: 20px;
+  background: #ffffff;
+  border: 1px solid #eee;
+}
+</style>

@@ -22,8 +22,11 @@ function func_load_vuescripts() {
 }
 
 // Register style
-wp_register_style('wp.style','https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/css/bootstrap.min.css');
+wp_register_style('wp.style','https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/css/bootstrap.min.css', true);
 wp_enqueue_style('wp.style');
+
+wp_register_style('wp.style.font',plugin_dir_url( __FILE__ ).'bee/src/style.css', true);
+wp_enqueue_style('wp.style.font');
 
 
 //Tell WordPress to register the scripts

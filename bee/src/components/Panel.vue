@@ -1,0 +1,44 @@
+<template>
+  <div class="container">
+    <div class="control-box shadow-sm">
+      <div>
+        <button class="btn btn-primary btn-lg btn-block mb-3 cus-btn">
+          <router-link to="/search" class="nav-link">صفحه جستجو</router-link>
+
+        </button>
+      </div>
+      <div>
+        <button class="btn btn-primary btn-lg btn-block cus-btn">مدیریت</button>
+      </div>
+    </div>
+  </div>
+</template>
+
+<script>
+export default {
+  data() {
+    return {};
+  },
+};
+</script>
+
+<style scoped>
+* {
+  font-family: "Irs";
+}
+.cus-btn {
+  height: 55px;
+}
+.control-box {
+  display: flex;
+  flex-flow: column;
+  justify-content: center;
+  background: #fff;
+  border: 1px solid #eee;
+  height: 200px;
+  text-align: center;
+  width: 100%;
+  margin-bottom: 10px;
+  padding: 10px;
+}
+</style>
