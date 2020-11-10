@@ -1,5 +1,5 @@
 <template>
-    <Form msg="Welcome to Your Vue.js App"/>
+    <Form :authuser="user"/>
 </template>
 
 <script>
@@ -7,7 +7,7 @@ import Form from './components/Form.vue'
 
 export default {
   name: 'App',
-  props: ['users'],
+  props: ['user'],
   components: {
     Form
   }
