@@ -6,6 +6,7 @@
 
 use App\Db\Database;
 use App\Model\City;
+use App\Model\Facility;
 use App\Model\Feature as Fea;
 use App\Model\Property;
 use App\Model\PropertyCategory;
@@ -104,10 +105,12 @@ add_action( 'rest_api_init', function () {
       $categories = PropertyCategory::get()->toArray();
       $sellType = SellType::get()->toArray();
       $feature = Fea::get()->toArray();
+      $facilities = Facility::get()->toArray();
       $data['provinces'] = $province;
       $data['categories'] = $categories;
       $data['sellTypes'] = $sellType;
       $data['features'] = $feature;
+      $data['facilities'] = $facilities;
       return $data;
   }
 

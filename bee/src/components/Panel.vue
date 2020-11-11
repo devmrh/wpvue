@@ -3,12 +3,14 @@
     <div class="control-box shadow-sm">
       <div>
         <button class="btn btn-primary btn-lg btn-block mb-3 cus-btn">
-          <router-link to="/search" class="nav-link">صفحه جستجو</router-link>
+          <router-link to="/search" class="text-white">صفحه جستجو</router-link>
 
         </button>
       </div>
       <div>
-        <button class="btn btn-primary btn-lg btn-block cus-btn">مدیریت</button>
+        <button class="btn btn-primary btn-lg btn-block cus-btn">
+            <router-link to="/search" class="text-white">مدیریت</router-link>
+        </button>
       </div>
     </div>
   </div>

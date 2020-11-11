@@ -70,7 +70,33 @@
             </select>
           </div>
         </div>
-
+        <div class="form-row mb-2 mt-2 distinct">
+          <div class="form-group col-md-3">
+            <label for="facilities">امکانات</label>
+            <div class="d-flex">
+              <div
+                class="form-check"
+                v-for="(item, index) in facilities"
+                :key="index"
+              >
+                <input
+                  class="form-check-input"
+                  @change="checkFacility($event)"
+                  type="checkbox"
+                  :id="'facilities' + index"
+                  :value="item.id"
+                />
+                <label
+                  class="form-check-label"
+                  name="facilities"
+                  :for="'facilities' + index"
+                >
+                  {{ item.name }}
+                </label>
+              </div>
+            </div>
+          </div>
+        </div>
         <div class="form-row mt-3 mb-3">
           <div class="form-group col">
             <label for="price">قیمت ملک</label>
@@ -117,7 +143,7 @@
             />
           </div>
         </div>
-        <div class="form-row">
+        <div class="form-row distinct">
           <div class="form-group col-md-6">
             <label for="province_id">استان</label>
             <select
@@ -177,7 +203,7 @@
             />
           </div>
         </div>
-        <div class="form-row">
+        <div class="form-row distinct">
           <div class="form-group col">
             <label for="bed_count">تعداد خواب</label>
             <input
@@ -300,6 +326,7 @@ export default {
       provinces: [],
       features: [],
       cities: [],
+      facilities: [],
       form: {
         title: "",
         property_category_id: "",
@@ -322,6 +349,7 @@ export default {
         address: "",
         description: "",
         special: "",
+        facilities: [],
         user_id: "",
       },
     };
@@ -330,6 +358,14 @@ export default {
     authuser: {},
   },
   methods: {
+    checkFacility(e) {
+      if (e.target.checked) {
+        this.form.facilities.push(e.target.value);
+      } else {
+        let filter = this.form.facilities.filter((el) => el != e.target.value);
+        this.form.facilities = filter;
+      }
+    },
     changeCategory(e) {
       this.form.property_category_id = e.target.value;
     },
@@ -353,7 +389,6 @@ export default {
         .catch((error) => console.log(error));
     },
     handleSubmit() {
-
       this.form.user_id = this.user.ID;
 
       let form = this.form;
@@ -371,7 +406,6 @@ export default {
     },
   },
   mounted() {
-
     api
       .get("api/v1/data")
       .then((response) => {
@@ -379,15 +413,16 @@ export default {
         this.sellTypes = response.data.sellTypes;
         this.provinces = response.data.provinces;
         this.features = response.data.features;
+        this.facilities = response.data.facilities;
       })
       .catch((error) => console.log(error));
 
-     // console.log(this.user);
-      //this.user_id = this.user.user.ID;
+    // console.log(this.user);
+    //this.user_id = this.user.user.ID;
   },
   computed: {
     ...mapState({
-      user: (state) => state.user
+      user: (state) => state.user,
     }),
   },
 };
@@ -416,9 +451,12 @@ export default {
   background: #ffffff;
   border: 1px solid #eee;
 }
+.distinct{
+  background: #f7f7f7;
+  padding: 5px;
+}
 input,
 select {
   font-size: 15px !important;
 }
-
 </style>

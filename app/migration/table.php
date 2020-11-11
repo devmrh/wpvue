@@ -43,6 +43,7 @@ Capsule::schema()->create('property_categories', function($table){
   $table->bigIncrements('id');
   $table->string('name');
   $table->string('slug');
+  $table->timestamps();
 
 
 });
@@ -50,6 +51,7 @@ Capsule::schema()->create('sell_types', function($table){
   $table->bigIncrements('id');
   $table->string('name');
   $table->string('slug');
+  $table->timestamps();
 
 
 });
@@ -58,7 +60,16 @@ Capsule::schema()->create('features', function($table){
   $table->bigIncrements('id');
   $table->string('name');
   $table->string('slug');
+  $table->timestamps();
 
+
+});
+
+Capsule::schema()->create('facilities', function($table){
+  $table->bigIncrements('id');
+  $table->string('name');
+  $table->string('slug');
+  $table->timestamps();
 
 });
 
@@ -92,12 +103,24 @@ Capsule::schema()->create('properties', function($table){
   $table->string('build_time')->nullable();
 
   $table->boolean('special')->default(0);
+  $table->timestamps();
 
   $table->foreign('property_category_id')->references('id')->on('property_categories')->onDelete('no action')->onUpdate('cascade');
   $table->foreign('sell_type_id')->references('id')->on('sell_types')->onDelete('no action')->onUpdate('cascade');
   $table->foreign('feature_id')->references('id')->on('features')->onDelete('no action')->onUpdate('cascade');
   $table->foreign('city_id')->references('id')->on('cities')->onDelete('no action')->onUpdate('cascade');
   $table->foreign('province_id')->references('id')->on('provinces')->onDelete('no action')->onUpdate('cascade');
+
+});
+
+Capsule::schema()->create('facility_property', function($table){
+  $table->bigIncrements('id');
+  $table->unsignedBigInteger('property_id');
+  $table->unsignedBigInteger('facility_id');
+
+  $table->foreign('property_id')->references('id')->on('properties')->onDelete('cascade')->onUpdate('cascade');
+  $table->foreign('facility_id')->references('id')->on('facilities')->onDelete('cascade')->onUpdate('cascade');
+
 
 });
 

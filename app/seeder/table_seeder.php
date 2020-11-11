@@ -5,7 +5,8 @@
 // echo dirname(dirname(__DIR__. 'vendor/autoload.php'));
 // return;
 
-require  dirname(dirname(__DIR__)). '/vendor/autoload.php';
+require  dirname(dirname(__DIR__)) . '/vendor/autoload.php';
+
 use App\Db\Database;
 use Illuminate\Database\Capsule\Manager as DB;
 
@@ -35,5 +36,9 @@ DB::table('sell_types')->insert([
   ['name' => 'اجاره', 'slug' => 'rent'],
   ['name' => 'سایر', 'slug' => 'other'],
 ]);
-
+DB::table('facilities')->insert([
+  ['name' => 'آسانسور', 'slug' => 'elevator'],
+  ['name' => 'پارکینگ', 'slug' => 'parking'],
+  ['name' => 'انباری', 'slug' => 'warehouse'],
+]);
 echo "DONE";

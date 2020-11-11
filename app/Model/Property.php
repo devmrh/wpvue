@@ -33,4 +33,35 @@ class Property extends Model
     'special',
     'user_id'
   ];
+
+  public function city()
+  {
+    $this->belongsTo(City::class);
+  }
+
+  public function province()
+  {
+    $this->belongsTo(Province::class);
+  }
+
+  public function sellType()
+  {
+    $this->belongsTo(SellType::class);
+  }
+
+  public function propertyCategory()
+  {
+    $this->belongsTo(PropertyCategory::class);
+  }
+
+  public function feature()
+  {
+    $this->belongsTo(Feature::class);
+  }
+
+  // relation many to many
+  public function facilities()
+  {
+    return $this->belongsToMany(Facility::class);
+  }
 }
