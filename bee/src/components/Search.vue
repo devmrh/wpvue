@@ -54,7 +54,7 @@
             </div>
           </div>
           <div class="col">
-            <div class="form-row">
+            <div class="form-row align-items-center distinct">
               <div class="form-group">
                 <label for="from_build_time">تاریخ ساخت بنا</label>
                 <input
@@ -66,7 +66,7 @@
                   placeholder="تاریخ ساخت بنا"
                 />
               </div>
-              <div>الی</div>
+              <div class="mx-4">الی</div>
               <div class="form-group">
                 <label for="to_build_time">تاریخ ساخت بنا</label>
                 <input
@@ -81,7 +81,7 @@
             </div>
 
             <!-- part 2 -->
-            <div class="form-row">
+            <div class="form-row distinct">
               <div class="form-group col-md-3">
                 <label for="category">دسته</label>
                 <select
@@ -172,59 +172,65 @@
             <!-- End part 2 -->
 
             <!-- Start part 3 -->
-            <div class="form-row mt-3 mb-3">
-              <div class="form-group col">
-                <label for="from_price">قیمت ملک</label>
-                <input
-                  type="number"
-                  name="from_price"
-                  class="form-control"
-                  id="from_price"
-                  v-model="form.from_price"
-                  placeholder="قیمت"
-                />
+            <div
+              class="form-row mt-3 mb-3 align-items-center distinct"
+              style="flex-flow: inherit"
+            >
+              <div class="dist-1 d-flex">
+                <div class="form-group col">
+                  <label for="from_price">قیمت ملک</label>
+                  <input
+                    type="number"
+                    name="from_price"
+                    class="form-control"
+                    id="from_price"
+                    v-model="form.from_price"
+                    placeholder="قیمت"
+                  />
+                </div>
+                <div class="mx-2">تا</div>
+                <div class="form-group col">
+                  <label for="price">قیمت ملک</label>
+                  <input
+                    type="number"
+                    name="to_price"
+                    class="form-control"
+                    id="to_price"
+                    v-model="form.to_price"
+                    placeholder="قیمت"
+                  />
+                </div>
               </div>
-              <div>تا</div>
-              <div class="form-group col">
-                <label for="price">قیمت ملک</label>
-                <input
-                  type="number"
-                  name="to_price"
-                  class="form-control"
-                  id="to_price"
-                  v-model="form.to_price"
-                  placeholder="قیمت"
-                />
-              </div>
-
-              <div class="form-group col">
-                <label for="from_rent_price">قیمت اجاره</label>
-                <input
-                  type="text"
-                  name="from_rent_price"
-                  class="form-control"
-                  id="from_rent_price"
-                  v-model="form.from_rent_price"
-                  placeholder="قیمت اجاره"
-                />
-              </div>
-              تا
-              <div class="form-group col">
-                <label for="to_rent_price">قیمت اجاره</label>
-                <input
-                  type="text"
-                  name="to_rent_price"
-                  class="form-control"
-                  id="to_rent_price"
-                  v-model="form.to_rent_price"
-                  placeholder="قیمت اجاره"
-                />
+              <div class="dist-2 d-flex">
+                <div class="form-group col">
+                  <label for="from_rent_price">قیمت اجاره</label>
+                  <input
+                    type="text"
+                    name="from_rent_price"
+                    class="form-control"
+                    id="from_rent_price"
+                    v-model="form.from_rent_price"
+                    placeholder="قیمت اجاره"
+                  />
+                </div>
+                <div class="mx-2">تا</div>
+                <div class="form-group col">
+                  <label for="to_rent_price">قیمت اجاره</label>
+                  <input
+                    type="text"
+                    name="to_rent_price"
+                    class="form-control"
+                    id="to_rent_price"
+                    v-model="form.to_rent_price"
+                    placeholder="قیمت اجاره"
+                  />
+                </div>
               </div>
             </div>
             <!-- End part 3 -->
 
             <!-- start part 4 -->
-            <div class="form-row">
+            <div class="form-row align-items-center distinct">
               <div class="form-group col">
                 <label for="from_size">متراژ</label>
                 <input
@@ -236,7 +242,7 @@
                   placeholder="متراژ"
                 />
               </div>
-              <div>تا</div>
+              <div class="mx-2">تا</div>
               <div class="form-group col">
                 <label for="to_size">متراژ</label>
                 <input
@@ -253,7 +259,7 @@
             <!-- end part 4 -->
 
             <!-- start part 5 -->
-            <div class="form-row">
+            <div class="form-row distinct">
               <div class="form-group col">
                 <label for="bed_count">تعداد خواب</label>
                 <input
@@ -462,5 +468,17 @@ export default {
   display: block;
   width: 80%;
   margin: 0 auto;
+}
+.distinct {
+  border-bottom: 2px solid #eee;
+  padding-bottom: 5px;
+  margin-bottom: 10px;
+}
+.dist-1 {
+  align-items: center;
+  border-left: 3px dashed #eee;
+}
+.dost-2 {
+  align-items: center;
 }
 </style>
