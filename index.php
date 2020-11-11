@@ -160,4 +160,53 @@ add_action( 'rest_api_init', function () {
 
 }
 
+
+
+// get all property
+add_action( 'rest_api_init', function () {
+  register_rest_route( 'api/v1', '/data/get-all-properties', array(
+        'methods' => 'GET',
+        'callback' => 'ea_get_properties',
+      ) );
+  } );
+
+function ea_get_properties( $data ) {
+
+    $pagenum = isset( $_GET['page'] ) ? absint( $_GET['page'] ) : 1;
+
+    $limit = 2; // number of rows in page
+    $offset = ( $pagenum - 1 ) * $limit;
+    $total = Property::get()->count();
+
+    // return $total;
+
+    $num_of_pages = ceil( $total / $limit );
+
+    $entries = Property::offset($offset)->limit($limit)->get();
+
+   // return $entries;
+    $page_links = array(
+      'base' => add_query_arg( 'page', '%#%' ),
+      'format' => '',
+      'prev_text' => __( '&laquo;', 'text-domain' ),
+      'next_text' => __( '&raquo;', 'text-domain' ),
+      'total' => $num_of_pages,
+      'current_page' => $pagenum,
+      "per_page" => $limit,
+      "last_page" => $num_of_pages,
+      "first_page_url" => add_query_arg( 'page', '1' ),
+      "last_page_url" => add_query_arg( 'page', $total ),
+      "next_page_url" => add_query_arg( 'page', $pagenum + 1 ),
+      "prev_page_url" => add_query_arg( 'page', $pagenum - 1 ),
+      "path" => add_query_arg( 'page' ),
+      "from" => $pagenum,
+      "to" => $num_of_pages,
+      'data' => $entries
+  ) ;
+
+  return $page_links;
+
+}
+
+
 ?>

@@ -1,21 +1,23 @@
 import App from "./App.vue";
 import One from "./components/One";
+import Property from "./components/Property";
 import Search from "./components/Search";
 import Vue from "vue";
 import VueRouter from "vue-router";
 import Vuex from "vuex";
 
 Vue.config.productionTip = false;
-
 Vue.use(Vuex);
 Vue.use(VueRouter);
+
 
 const router = new VueRouter({
   mode: "history",
   base: __dirname,
   routes: [
-    { path: "/search", component: Search },
     { path: "/amlak", component: One },
+    { path: "/search", component: Search },
+    { path: "/manage", component: Property },
   ],
 });
 
@@ -23,11 +25,15 @@ const store = new Vuex.Store({
   state: {
     user: null,
     auth: null,
+    properties: null
   },
   mutations: {
     setUser(state, user) {
       state.user = JSON.parse(user);
     },
+    setProperties(state, data){
+      state.properties = data;
+    }
   },
   actions: {
     // async getFiles() {
@@ -46,6 +52,9 @@ const store = new Vuex.Store({
     user: (state) => {
       return state.user;
     },
+    properties: (state) => {
+      return state.properties;
+    }
   },
 });
 

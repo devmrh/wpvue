@@ -9,7 +9,7 @@
       </div>
       <div>
         <button class="btn btn-primary btn-lg btn-block cus-btn">
-            <router-link to="/search" class="text-white">مدیریت</router-link>
+            <router-link to="/manage" class="text-white">مدیریت</router-link>
         </button>
       </div>
     </div>
