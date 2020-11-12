@@ -1,7 +1,10 @@
 <template>
-  <div>
+  <div class="row">
+    <div class="col-md-2">
+    <Panel></Panel>
+    </div>
+    <div class="col-md-10">
     <div class="create-from-title">جستجو در املاک</div>
-
     <div class="container search-form">
       <form @submit.prevent="handleSubmit" style="width: 100%">
         <div class="row">
@@ -328,11 +331,15 @@
         <button type="submit" class="btn btn-lg btn-primary">جستجو</button>
       </form>
     </div>
+
+    </div>
   </div>
 </template>
 
 <script>
 import api from "../services/api";
+import Panel from "./Panel";
+
 export default {
   data() {
     return {
@@ -366,6 +373,7 @@ export default {
       },
     };
   },
+  components: {Panel},
   mounted() {
     api
       .get("api/v1/data")

@@ -1,6 +1,6 @@
 <template>
   <div class="shadow-sm rounded" style="margin: 0 50px">
-    <div class="create-from-title">ثبت ملک جدید</div>
+    <div class="create-from-title">ویرایش ملک {{ form.title }}</div>
     <div class="create-form">
       <form @submit.prevent="handleSubmit">
         <div class="form-row">
@@ -27,6 +27,7 @@
                 :value="item.id"
                 v-for="(item, index) in categories"
                 :key="index"
+                :selected="item.id == form.property_category_id"
               >
                 {{ item.name }}
               </option>
@@ -45,6 +46,7 @@
                 v-for="(item, index) in sellTypes"
                 :key="index"
                 :value="item.id"
+                :selected="item.id == form.sell_type_id"
               >
                 {{ item.name }}
               </option>
@@ -63,6 +65,7 @@
                 v-for="(item, index) in features"
                 :key="index"
                 :value="item.id"
+                :selected="item.id == form.feature_id"
               >
                 {{ item.name }}
               </option>
@@ -155,6 +158,7 @@
                 :value="item.id"
                 v-for="(item, index) in provinces"
                 :key="index"
+                :selected="item.id == form.province_id"
               >
                 {{ item.name }}
               </option>
@@ -172,6 +176,7 @@
                 v-for="(item, index) in cities"
                 :value="item.id"
                 :key="index"
+                :selected="item.id == form.city_id"
               >
                 {{ item.name }}
               </option>
@@ -302,15 +307,27 @@
               v-model="form.special"
               type="checkbox"
               id="gridCheck"
+              :checked="form.special"
             />
             <label class="form-check-label" name="special" for="gridCheck">
               ویژه؟
             </label>
           </div>
         </div>
-        <button type="submit" class="btn btn-lg btn-primary">ذخیره فرم</button>
-        <div class="my-2 font-weight-bold text-success" v-if="info">{{info}}</div>
-        <div class="my-2 font-weight-bold text-danger" v-if="err">{{err}}</div>
+        <button type="submit" class="btn btn-lg btn-primary">بروزرسانی</button>
+        <button
+          type="button"
+          @click="$emit('clicked', 'form')"
+          class="btn btn-primary btn-lg btn-block mt-3 cus-btn"
+        >
+          بازگشت
+        </button>
+        <div class="my-2 font-weight-bold text-success" v-if="info">
+          {{ info }}
+        </div>
+        <div class="my-2 font-weight-bold text-danger" v-if="err">
+          {{ err }}
+        </div>
       </form>
     </div>
   </div>
@@ -318,9 +335,8 @@
 
 <script>
 import api from "../services/api";
-import { mapState } from "vuex";
+//import { mapState } from "vuex";
 export default {
-  name: "Form",
   data() {
     return {
       categories: [],
@@ -330,6 +346,7 @@ export default {
       cities: [],
       facilities: [],
       form: {
+        id: "",
         title: "",
         property_category_id: "",
         sell_type_id: "",
@@ -352,15 +369,12 @@ export default {
         description: "",
         special: "",
         facilities: [],
-        user_id: "",
       },
+      err: "",
       info: "",
-      err: ""
     };
   },
-  props: {
-    authuser: {},
-  },
+  props: ["editform"],
   methods: {
     checkFacility(e) {
       if (e.target.checked) {
@@ -393,14 +407,12 @@ export default {
         .catch((error) => console.log(error));
     },
     handleSubmit() {
-      this.form.user_id = this.user.ID;
+      //  this.form.user_id = this.user.ID;
 
       let form = this.form;
 
-      this.info = null;
-      this.err = null;
       api
-        .post("api/v1/data/save-form", {
+        .post("api/v1/data/save-edit-form", {
           ...form,
         })
         .then((res) => {
@@ -412,12 +424,17 @@ export default {
     },
   },
   mounted() {
+    this.form = { ...this.editform };
+    this.form.facilities = this.facilities;
+    this.form.id = this.editform.id;
+
     api
       .get("api/v1/data")
       .then((response) => {
         this.categories = response.data.categories;
         this.sellTypes = response.data.sellTypes;
         this.provinces = response.data.provinces;
+        this.cities = response.data.cities;
         this.features = response.data.features;
         this.facilities = response.data.facilities;
       })
@@ -427,9 +444,9 @@ export default {
     //this.user_id = this.user.user.ID;
   },
   computed: {
-    ...mapState({
-      user: (state) => state.user,
-    }),
+    // ...mapState({
+    //   user: (state) => state.user,
+    // }),
   },
 };
 </script>
@@ -457,7 +474,7 @@ export default {
   background: #ffffff;
   border: 1px solid #eee;
 }
-.distinct{
+.distinct {
   background: #f7f7f7;
   padding: 5px;
 }

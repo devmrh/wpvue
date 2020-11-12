@@ -12,6 +12,11 @@
             <router-link to="/manage" class="text-white">مدیریت</router-link>
         </button>
       </div>
+      <div>
+        <button class="btn btn-primary btn-lg btn-block mt-3 cus-btn">
+            <router-link to="/amlak" class="text-white">افزودن ملک</router-link>
+        </button>
+      </div>
     </div>
   </div>
 </template>

@@ -90,11 +90,11 @@ function ea_get_cities( $data ) {
 add_action( 'rest_api_init', function () {
   register_rest_route( 'api/v1', '/data/', array(
         'methods' => 'GET',
-        'callback' => 'ea_get_users',
+        'callback' => 'ea_get_data',
       ) );
   } );
 
-  function ea_get_users( $data ) {
+  function ea_get_data( $data ) {
       //$identifier = $data->get_param( 'identifier' );
       // $users = get_users();
       // $users = $users;
@@ -102,11 +102,13 @@ add_action( 'rest_api_init', function () {
 
       $data = [];
       $province = Province::get()->toArray();
+      $cities = City::get()->toArray();
       $categories = PropertyCategory::get()->toArray();
       $sellType = SellType::get()->toArray();
       $feature = Fea::get()->toArray();
       $facilities = Facility::get()->toArray();
       $data['provinces'] = $province;
+      $data['cities'] = $cities;
       $data['categories'] = $categories;
       $data['sellTypes'] = $sellType;
       $data['features'] = $feature;
@@ -119,48 +121,86 @@ add_action( 'rest_api_init', function () {
 add_action( 'rest_api_init', function () {
   register_rest_route( 'api/v1', '/data/save-form', array(
         'methods' => 'POST',
-        'callback' => 'ea_save_users',
+        'callback' => 'ea_save_form',
       ) );
   } );
 
-  function ea_save_users( $data ) {
+  function ea_save_form( $data ) {
       $params = $data->get_params();
      // return $params['build_time'];
+      $property = Property::create([
+        'title'=> $params['title'],
+        'property_category_id'=> $params['property_category_id'] ?? null,
+        'sell_type_id'=> $params['sell_type_id'] ?? null,
+        'feature_id'=> $params['feature_id'] ?? null,
+        'price'=> $params['price'] ?? '',
+        'price_label'=> $params['price_label'] ?? '',
+        'rent_price'=> $params['rent_price'] ?? '',
+        'rent_label'=> $params['rent_label'] ?? '',
+        'province_id'=> $params['province_id'] ?? '',
+        'city_id'=> $params['city_id'] ?? '',
+        'size'=> $params['size'] ?? '',
+        'size_unit'=> $params['size_unit'] ?? '',
+        'bed_count'=> $params['bed_count'] ?? '',
+        'bath_count'=> $params['bath_count'] ?? '',
+        'parking_count'=> $params['parking_count'] ?? '',
+        'owner'=> $params['owner'] ?? '',
+        'phone'=> $params['phone'] ?? '',
+        'build_time'=> $params['build_time'] ?? '',
+        'address'=> $params['address'] ?? '',
+        'description'=> $params['description'] ?? '',
+        'user_id' => $params['user_id'],
+        'special'=> $params['special']  == true ? 1 : 0,
+      ]);
 
-     $f = new Fea();
-     $f->name = 'aa';
-     $f->slug = 'aa';
-     $f->save();
-      // Property::create([
-      //   'title'=> $params['title'],
-      //   'property_category_id'=> $params['property_category_id'] ?? null,
-      //   'sell_type_id'=> $params['sell_type_id'] ?? null,
-      //   'feature_id'=> $params['feature_id'] ?? null,
-      //   'price'=> $params['price'] ?? '',
-      //   'price_label'=> $params['price_label'] ?? '',
-      //   'rent_price'=> $params['rent_price'] ?? '',
-      //   'rent_label'=> $params['rent_label'] ?? '',
-      //   'province_id'=> $params['province_id'] ?? '',
-      //   'city_id'=> $params['city_id'] ?? '',
-      //   'size'=> $params['size'] ?? '',
-      //   'size_unit'=> $params['size_unit'] ?? '',
-      //   'bed_count'=> $params['bed_count'] ?? '',
-      //   'bath_count'=> $params['bath_count'] ?? '',
-      //   'parking_count'=> $params['parking_count'] ?? '',
-      //   'owner'=> $params['owner'] ?? '',
-      //   'phone'=> $params['phone'] ?? '',
-      //   'build_time'=> $params['build_time'] ?? '',
-      //   'address'=> $params['address'] ?? '',
-      //   'description'=> $params['description'] ?? '',
-      //   'user_id' => 1,
-      //   'special'=> $params['special']  == true ? 1 : 0,
-      // ]);
-
-      return "success";
+      $facilities = $params['facilities'];
+      $property->facilities()->attach($facilities);
+      return "موفق";
 
 }
 
+// edit data.
+add_action( 'rest_api_init', function () {
+  register_rest_route( 'api/v1', '/data/save-edit-form', array(
+        'methods' => 'POST',
+        'callback' => 'ea_edit_form',
+      ) );
+  } );
 
+  function ea_edit_form( $data ) {
+      $params = $data->get_params();
+      $form_id = $params['id'];
+
+      Property::find($form_id)->update([
+        'title'=> $params['title'],
+        'property_category_id'=> $params['property_category_id'] ?? null,
+        'sell_type_id'=> $params['sell_type_id'] ?? null,
+        'feature_id'=> $params['feature_id'] ?? null,
+        'price'=> $params['price'] ?? '',
+        'price_label'=> $params['price_label'] ?? '',
+        'rent_price'=> $params['rent_price'] ?? '',
+        'rent_label'=> $params['rent_label'] ?? '',
+        'province_id'=> $params['province_id'] ?? '',
+        'city_id'=> $params['city_id'] ?? '',
+        'size'=> $params['size'] ?? '',
+        'size_unit'=> $params['size_unit'] ?? '',
+        'bed_count'=> $params['bed_count'] ?? '',
+        'bath_count'=> $params['bath_count'] ?? '',
+        'parking_count'=> $params['parking_count'] ?? '',
+        'owner'=> $params['owner'] ?? '',
+        'phone'=> $params['phone'] ?? '',
+        'build_time'=> $params['build_time'] ?? '',
+        'address'=> $params['address'] ?? '',
+        'description'=> $params['description'] ?? '',
+        'special'=> $params['special']  == true ? 1 : 0,
+      ]);
+
+      $facilities = $params['facilities'];
+      $property = Property::find($form_id);
+      $property->facilities()->sync($facilities);
+      return "موفق";
+
+}
 
 // get all property
 add_action( 'rest_api_init', function () {
@@ -182,7 +222,7 @@ function ea_get_properties( $data ) {
 
     $num_of_pages = ceil( $total / $limit );
 
-    $entries = Property::offset($offset)->limit($limit)->get();
+    $entries = Property::with('facilities')->offset($offset)->limit($limit)->get();
 
    // return $entries;
     $page_links = array(
@@ -207,6 +247,24 @@ function ea_get_properties( $data ) {
   return $page_links;
 
 }
+
+
+// save data.
+add_action( 'rest_api_init', function () {
+  register_rest_route( 'api/v1', '/data/delete-property', array(
+        'methods' => 'POST',
+        'callback' => 'ea_delete_form',
+      ) );
+  } );
+
+  function ea_delete_form( $data ) {
+      $params = $data->get_params();
+      $id =  $params['id'];
+      Property::find($id)->delete();
+      return "موفق";
+
+}
+
 
 
 ?>

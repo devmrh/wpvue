@@ -9,6 +9,8 @@ class Property extends Model
 {
   protected $table = 'properties';
 
+ // protected $appends = ["ProFacilities"];
+
   protected $fillable = [
     'title',
     'property_category_id',
@@ -36,29 +38,33 @@ class Property extends Model
 
   public function city()
   {
-    $this->belongsTo(City::class);
+    return $this->belongsTo(City::class);
   }
 
   public function province()
   {
-    $this->belongsTo(Province::class);
+    return $this->belongsTo(Province::class);
   }
 
   public function sellType()
   {
-    $this->belongsTo(SellType::class);
+    return $this->belongsTo(SellType::class);
   }
 
   public function propertyCategory()
   {
-    $this->belongsTo(PropertyCategory::class);
+    return $this->belongsTo(PropertyCategory::class);
   }
 
   public function feature()
   {
-    $this->belongsTo(Feature::class);
+    return $this->belongsTo(Feature::class);
   }
 
+  // public function getProFacilitiesAttribute()
+  // {
+  //   return $this->facilities()->where('property_id', $this->id)->get();;
+  // }
   // relation many to many
   public function facilities()
   {
