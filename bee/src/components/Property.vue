@@ -3,7 +3,7 @@
     <div class="col-md-2">
       <Panel></Panel>
     </div>
-    <div class="col-md-10">
+    <div class="col-md-10" v-if="allow">
       <div
         v-if="showCondition == 'form'"
         class="shadow-sm rounded"
@@ -75,6 +75,9 @@
         <EditForm @clicked="childEvent" :editform="editFormdata"></EditForm>
       </div>
     </div>
+    <div class="col-md-10" v-if="!allow">
+      <div class="err">شما دسترسی کافی برای مدیریت ملک ندارید</div>
+    </div>
   </div>
 </template>
 
@@ -98,6 +101,7 @@ export default {
       perpage: "",
       info: "",
       err: "",
+      allow: null,
     };
   },
   components: { Pagination, Panel, EditForm },
@@ -141,19 +145,29 @@ export default {
           this.$store.commit("setProperties", response.data);
         });
     },
+    findOne(haystack, arr) {
+      return arr.some(function (v) {
+        return haystack.indexOf(v) >= 0;
+      });
+    },
+    check() {
+      if (!this.findOne(this.roles, ["ml-editor", "administrator"])) {
+        // return this.$router.push("/error");
+        return false;
+      }
+      return true;
+    },
   },
   mounted() {
+    this.allow = this.check();
+    if (!this.allow) return false;
     this.getResults();
-    // api
-    //   .get("api/v1/data/get-all-properties?page=1")
-    //   .then((response) => {
-    //     this.properties = response.data.data;
-    //   })
-    //   .catch((error) => console.log(error));
   },
   computed: {
     ...mapState({
       propdata: (state) => state.properties,
+      user: (state) => state.user,
+      roles: (state) => state.user && state.user.roles,
     }),
   },
 };
@@ -162,6 +176,16 @@ export default {
 * {
   font-family: "Irs";
   font-size: 14px;
+}
+.err {
+  text-align: center;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #7b1b1b;
+  font-size: 15px;
+  font-weight: bold;
 }
 .cc-title {
   text-align: center;

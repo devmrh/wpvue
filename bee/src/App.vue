@@ -5,14 +5,34 @@
 </template>
 
 <script>
-
 export default {
   name: "App",
   props: ["user"],
+  methods: {
+    check() {
+      if (this.roles) {
+        if (
+          !this.findOne(this.user.roles, [
+            "ml-author",
+            "ml-editor",
+            "ml-adviser",
+            "administrator",
+          ])
+        ) {
+          // return this.$router.push("/error");
+          return false;
+        }
+        return true;
+      }
+      return false;
+    },
+  },
   mounted() {
     this.$store.commit("setUser", this.user);
+    if(!this.check()){
+      return  this.$router.push("/error");
+    }
   },
-
 };
 </script>
 

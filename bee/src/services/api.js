@@ -7,7 +7,7 @@ let server = {
 };
 
 const api = Axios.create({
-  baseURL: server["dev2"]
+  baseURL: server["dev"]
 })
 
 export default api;

@@ -1,4 +1,5 @@
 import App from "./App.vue";
+import Error from './components/Error';
 import One from "./components/One";
 import Property from "./components/Property";
 import Search from "./components/Search";
@@ -18,6 +19,7 @@ const router = new VueRouter({
     { path: "/amlak", component: One },
     { path: "/search", component: Search },
     { path: "/manage", component: Property },
+    { path: '/error', component: Error }
   ],
 });
 

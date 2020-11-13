@@ -1,12 +1,20 @@
 <template>
   <div class="shadow-sm rounded" style="margin: 0 50px">
-    <div class="create-from-title">ثبت ملک جدید</div>
+    <button
+      type="button"
+      @click="$emit('clicked', 'all')"
+      class="btn btn-warning btn-lg text-white btn-block mt-3 cus-btn"
+    >
+      بستن
+    </button>
+    <div class="create-from-title">مشاهده ملک {{ form.title }}</div>
     <div class="create-form">
-      <form @submit.prevent="handleSubmit">
+      <form>
         <div class="form-row">
           <div class="form-group col-md-3">
             <label for="title">عنوان</label>
             <input
+              disabled
               type="title"
               class="form-control"
               id="title"
@@ -18,8 +26,8 @@
           <div class="form-group col-md-3">
             <label for="category">دسته</label>
             <select
+              disabled
               id="category"
-              @change="changeCategory($event)"
               name="property_category_id"
               class="form-control"
             >
@@ -27,6 +35,7 @@
                 :value="item.id"
                 v-for="(item, index) in categories"
                 :key="index"
+                :selected="item.id == form.property_category_id"
               >
                 {{ item.name }}
               </option>
@@ -37,7 +46,7 @@
             <label for="sell_type">نوع معامله</label>
             <select
               id="sell_type"
-              @change="changeSellType($event)"
+              disabled
               name="sell_type_id"
               class="form-control"
             >
@@ -45,6 +54,7 @@
                 v-for="(item, index) in sellTypes"
                 :key="index"
                 :value="item.id"
+                :selected="item.id == form.sell_type_id"
               >
                 {{ item.name }}
               </option>
@@ -55,7 +65,7 @@
             <label for="feature">ویژگی ملک</label>
             <select
               id="feature"
-              @change="changeFeature($event)"
+              disabled
               name="feature_id"
               class="form-control"
             >
@@ -63,6 +73,7 @@
                 v-for="(item, index) in features"
                 :key="index"
                 :value="item.id"
+                :selected="item.id == form.feature_id"
               >
                 {{ item.name }}
               </option>
@@ -80,8 +91,8 @@
                 :key="index"
               >
                 <input
+                  disabled
                   class="form-check-input"
-                  @change="checkFacility($event)"
                   type="checkbox"
                   :id="'facilities' + index"
                   :value="item.id"
@@ -101,6 +112,7 @@
           <div class="form-group col">
             <label for="price">قیمت ملک</label>
             <input
+              disabled
               type="number"
               name="price"
               class="form-control"
@@ -112,6 +124,7 @@
           <div class="form-group col">
             <label for="price_label">پسوند قیمت</label>
             <input
+              disabled
               type="text"
               name="price_label"
               class="form-control"
@@ -123,6 +136,7 @@
           <div class="form-group col">
             <label for="rent_price">قیمت اجاره</label>
             <input
+              disabled
               type="text"
               name="rent_price"
               class="form-control"
@@ -134,6 +148,7 @@
           <div class="form-group col">
             <label for="rent_label">پسوند قیمت اجاره</label>
             <input
+              disabled
               type="text"
               name="rent_label"
               class="form-control"
@@ -146,15 +161,12 @@
         <div class="form-row distinct">
           <div class="form-group col-md-6">
             <label for="province_id">استان</label>
-            <select
-              id="province_id"
-              @change="getCityByProvince($event)"
-              class="form-control"
-            >
+            <select disabled id="province_id" class="form-control">
               <option
                 :value="item.id"
                 v-for="(item, index) in provinces"
                 :key="index"
+                :selected="item.id == form.province_id"
               >
                 {{ item.name }}
               </option>
@@ -163,15 +175,12 @@
           </div>
           <div class="form-group col-md-6">
             <label for="city_id">شهر</label>
-            <select
-              id="city_id"
-              @change="changeCity($event)"
-              class="form-control"
-            >
+            <select disabled id="city_id" class="form-control">
               <option
                 v-for="(item, index) in cities"
                 :value="item.id"
                 :key="index"
+                :selected="item.id == form.city_id"
               >
                 {{ item.name }}
               </option>
@@ -183,6 +192,7 @@
           <div class="form-group col">
             <label for="size">متراژ</label>
             <input
+              disabled
               type="number"
               name="size"
               class="form-control"
@@ -194,6 +204,7 @@
           <div class="form-group col">
             <label for="size_unit">واحد متراژ</label>
             <input
+              disabled
               type="text"
               name="size_unit"
               v-model="form.size_unit"
@@ -207,6 +218,7 @@
           <div class="form-group col">
             <label for="bed_count">تعداد خواب</label>
             <input
+              disabled
               type="number"
               name="bed_count"
               v-model="form.bed_count"
@@ -218,6 +230,7 @@
           <div class="form-group col">
             <label for="bath_count">تعداد حمام</label>
             <input
+              disabled
               type="number"
               name="bath_count"
               v-model="form.bath_count"
@@ -229,6 +242,7 @@
           <div class="form-group col">
             <label for="parking_count">تعداد پارکینگ</label>
             <input
+              disabled
               type="number"
               name="parking_count"
               v-model="form.parking_count"
@@ -243,6 +257,7 @@
           <div class="form-group col">
             <label for="owner">مالک</label>
             <input
+              disabled
               type="text"
               name="owner"
               v-model="form.owner"
@@ -254,6 +269,7 @@
           <div class="form-group col">
             <label for="phone">شماره تماس مالک</label>
             <input
+              disabled
               type="text"
               name="phone"
               v-model="form.phone"
@@ -266,6 +282,7 @@
         <div class="form-group">
           <label for="build_time">تاریخ ساخت بنا</label>
           <input
+            disabled
             type="text"
             name="build_time"
             v-model="form.build_time"
@@ -277,6 +294,7 @@
         <div class="form-group">
           <label for="address">آدرس</label>
           <input
+            disabled
             type="text"
             name="address"
             v-model="form.address"
@@ -288,6 +306,7 @@
         <div class="form-group">
           <label for="description">توضیحات</label>
           <textarea
+            disabled
             class="form-control"
             name="description"
             v-model="form.description"
@@ -298,22 +317,28 @@
         <div class="form-group">
           <div class="form-check">
             <input
+              disabled
               class="form-check-input"
               v-model="form.special"
               type="checkbox"
               id="gridCheck"
+              :checked="form.special"
             />
             <label class="form-check-label" name="special" for="gridCheck">
               ویژه؟
             </label>
           </div>
         </div>
-        <button type="submit" class="btn btn-lg btn-primary">ذخیره فرم</button>
-        <div class="my-2 font-weight-bold text-success" v-if="info">
-          {{ info }}
-        </div>
-        <div class="my-2 font-weight-bold text-danger" v-if="err">
-          {{ err }}
+        <div class="row">
+          <div class="col-md-12">
+            <button
+              type="button"
+              @click="$emit('clicked', 'all')"
+              class="btn btn-warning text-white btn-lg btn-block mt-3 cus-btn"
+            >
+              بستن
+            </button>
+          </div>
         </div>
       </form>
     </div>
@@ -322,9 +347,8 @@
 
 <script>
 import api from "../services/api";
-import { mapState } from "vuex";
+//import { mapState } from "vuex";
 export default {
-  name: "Form",
   data() {
     return {
       categories: [],
@@ -334,6 +358,7 @@ export default {
       cities: [],
       facilities: [],
       form: {
+        id: "",
         title: "",
         property_category_id: "",
         sell_type_id: "",
@@ -356,70 +381,23 @@ export default {
         description: "",
         special: "",
         facilities: [],
-        user_id: "",
       },
-      info: "",
-      err: "",
     };
   },
-  props: {},
-  methods: {
-    checkFacility(e) {
-      if (e.target.checked) {
-        this.form.facilities.push(e.target.value);
-      } else {
-        let filter = this.form.facilities.filter((el) => el != e.target.value);
-        this.form.facilities = filter;
-      }
-    },
-    changeCategory(e) {
-      this.form.property_category_id = e.target.value;
-    },
-    changeSellType(e) {
-      this.form.sell_type_id = e.target.value;
-    },
-    changeFeature(e) {
-      this.form.feature_id = e.target.value;
-    },
-    changeCity(e) {
-      this.form.city_id = e.target.value;
-    },
-    getCityByProvince(e) {
-      let id = e.target.value;
-      this.form.province_id = id;
-      api
-        .get(`api/v1/data/get-cities?province=${id}`)
-        .then((response) => {
-          this.cities = response.data.cities;
-        })
-        .catch((error) => console.log(error));
-    },
-    handleSubmit() {
-      this.form.user_id = this.user.ID;
-
-      let form = this.form;
-
-      this.info = null;
-      this.err = null;
-      api
-        .post("api/v1/data/save-form", {
-          ...form,
-        })
-        .then((res) => {
-          this.info = res.data;
-        })
-        .catch((e) => {
-          this.err = e.response.data.data;
-        });
-    },
-  },
+  props: ["singleform"],
+  methods: {},
   mounted() {
+    this.form = { ...this.singleform };
+    this.form.facilities = this.facilities;
+    this.form.id = this.singleform.id;
+
     api
       .get("api/v1/data")
       .then((response) => {
         this.categories = response.data.categories;
         this.sellTypes = response.data.sellTypes;
         this.provinces = response.data.provinces;
+        this.cities = response.data.cities;
         this.features = response.data.features;
         this.facilities = response.data.facilities;
       })
@@ -429,9 +407,9 @@ export default {
     //this.user_id = this.user.user.ID;
   },
   computed: {
-    ...mapState({
-      user: (state) => state.user,
-    }),
+    // ...mapState({
+    //   user: (state) => state.user,
+    // }),
   },
 };
 </script>

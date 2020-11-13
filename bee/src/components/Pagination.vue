@@ -2,7 +2,7 @@
 <template>
   <div>
     <div class="pagination">
-      <div key="back" @click="fetchSkip(currentpage - perpage)">back</div>
+      <div key="back" @click="fetchSkip(currentpage - perpage)">قبلی</div>
       <div
         v-for="fromPage in toPage"
         :key="fromPage"
@@ -11,7 +11,7 @@
       >
         {{ fromPage }}
       </div>
-      <div key="next" @click="fetchSkip(perPage)">right</div>
+      <div key="next" @click="fetchSkip(perPage)">بعدی</div>
     </div>
   </div>
 </template>

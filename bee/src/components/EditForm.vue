@@ -314,14 +314,22 @@
             </label>
           </div>
         </div>
-        <button type="submit" class="btn btn-lg btn-primary">بروزرسانی</button>
-        <button
-          type="button"
-          @click="$emit('clicked', 'form')"
-          class="btn btn-primary btn-lg btn-block mt-3 cus-btn"
-        >
-          بازگشت
-        </button>
+        <div class="row">
+          <div class="col-md-2">
+            <button type="submit" class="btn btn-lg btn-primary">
+              بروزرسانی
+            </button>
+          </div>
+          <div class="col-md-10">
+            <button
+              type="button"
+              @click="$emit('clicked', 'form')"
+              class="btn btn-warning text-white btn-lg btn-block mt-3 cus-btn"
+            >
+              بازگشت
+            </button>
+          </div>
+        </div>
         <div class="my-2 font-weight-bold text-success" v-if="info">
           {{ info }}
         </div>
@@ -412,14 +420,14 @@ export default {
       let form = this.form;
 
       api
-        .post("api/v1/data/save-edit-form", {
+        .post("api/v1/data/update-form", {
           ...form,
         })
         .then((res) => {
           this.info = res.data;
         })
         .catch((e) => {
-          this.err = e;
+          this.err = e.response.data.data;
         });
     },
   },
