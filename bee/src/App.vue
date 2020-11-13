@@ -1,18 +1,36 @@
 <template>
-  <div class="main-row">
+  <div class="main-row" v-if="check">
     <router-view class="view"></router-view>
   </div>
 </template>
 
 <script>
+import { mapState } from "vuex";
+
 export default {
   name: "App",
   props: ["user"],
   methods: {
+    findOne(haystack, arr) {
+      return arr.some(function (v) {
+        return haystack.indexOf(v) >= 0;
+      });
+    },
+  },
+  mounted() {
+    this.$store.commit("setUser", JSON.parse(this.user));
+    // if (!this.check) {
+    //   return this.$router.push("/error");
+    // }
+  },
+  computed: {
+    ...mapState({
+      roles: (state) => state.user && state.user.roles,
+    }),
     check() {
       if (this.roles) {
         if (
-          !this.findOne(this.user.roles, [
+          !this.findOne(this.roles, [
             "ml-author",
             "ml-editor",
             "ml-adviser",
@@ -26,12 +44,6 @@ export default {
       }
       return false;
     },
-  },
-  mounted() {
-    this.$store.commit("setUser", this.user);
-    if(!this.check()){
-      return  this.$router.push("/error");
-    }
   },
 };
 </script>

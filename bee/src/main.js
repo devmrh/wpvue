@@ -31,7 +31,7 @@ const store = new Vuex.Store({
   },
   mutations: {
     setUser(state, user) {
-      state.user = JSON.parse(user);
+      state.user = user;
     },
     setProperties(state, data){
       state.properties = data;

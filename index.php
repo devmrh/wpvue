@@ -47,7 +47,7 @@ function func_wp_vue(){
 
 
   if (!is_user_logged_in() ) {
-    $str= "<div>"
+    $str= "<div class='text-center'>"
   	."برای مشاهده صفحه ابتدا ورود کنید"
   	."</div>";
     return $str;
