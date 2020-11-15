@@ -18,6 +18,7 @@
                 <th>عنوان</th>
                 <th>مالک</th>
                 <th>آدرس</th>
+                <th>ثبت توسط</th>
                 <th>ویرایش</th>
               </tr>
             </thead>
@@ -34,6 +35,11 @@
                 </td>
                 <td>
                   <div class="text-center">{{ item.address }}</div>
+                </td>
+                <td>
+                  <div class="text-center">
+                      {{ item.username }}
+                  </div>
                 </td>
                 <td>
                   <div class="d-flex">

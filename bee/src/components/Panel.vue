@@ -22,6 +22,21 @@
             <router-link to="/category" class="text-white">مدیریت دسته ها</router-link>
         </button>
       </div>
+      <div>
+        <button class="btn btn-primary btn-lg btn-block mt-3 cus-btn">
+            <router-link to="/selltype" class="text-white">مدیریت نوع معامله</router-link>
+        </button>
+      </div>
+      <div>
+        <button class="btn btn-primary btn-lg btn-block mt-3 cus-btn">
+            <router-link to="/feature" class="text-white">مدیریت ویژگی ملک</router-link>
+        </button>
+      </div>
+      <div>
+        <button class="btn btn-primary btn-lg btn-block mt-3 cus-btn">
+            <router-link to="/facilities" class="text-white">مدیریت امکانات ملک</router-link>
+        </button>
+      </div>
     </div>
   </div>
 </template>

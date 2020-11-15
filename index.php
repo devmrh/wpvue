@@ -306,6 +306,7 @@ add_action( 'rest_api_init', function () {
 
 
 // Get property categories.
+########### 1 ############
 add_action( 'rest_api_init', function () {
   register_rest_route( 'api/v1', '/data/get-categories', array(
         'methods' => 'GET',
@@ -374,15 +375,224 @@ add_action( 'rest_api_init', function () {
 }
 
 
-
+############ 1 ################
 // END of category
 
 
+// Start sell type logic
+########## 2 ##############
+add_action( 'rest_api_init', function () {
+  register_rest_route( 'api/v1', '/data/get-sell-types', array(
+        'methods' => 'GET',
+        'callback' => 'ea_get_sell_types',
+        'permissions_callback' => 'is_user_logged_in',
+
+      ) );
+  } );
+
+  function ea_get_sell_types( $data ) {
+
+      $selltypes = SellType::get();
+      return compact('selltypes');
+
+}
+add_action( 'rest_api_init', function () {
+  register_rest_route( 'api/v1', '/data/add-sell-type', array(
+        'methods' => 'POST',
+        'callback' => 'ea_add_sell_type',
+        'permissions_callback' => 'is_user_logged_in',
+
+      ) );
+  } );
+
+  function ea_add_sell_type( $data ) {
+    $params = $data->get_params();
+    $c = $params["selltype"];
+    $selltype = SellType::create(['name' => $c]);
+    return compact('selltype');
+
+}
+add_action( 'rest_api_init', function () {
+  register_rest_route( 'api/v1', '/data/edit-sell-type', array(
+        'methods' => 'POST',
+        'callback' => 'ea_edit_sell_type',
+        'permissions_callback' => 'is_user_logged_in',
+
+      ) );
+  } );
+
+  function ea_edit_sell_type( $data ) {
+    $params = $data->get_params();
+    $c = $params["selltype"];
+    $id = $params["id"];
+    SellType::find($id)->update(['name' => $c]);
+    return "success";
+
+}
 
 
+add_action( 'rest_api_init', function () {
+  register_rest_route( 'api/v1', '/data/delete-sell-type', array(
+        'methods' => 'POST',
+        'callback' => 'ea_delete_sell_type',
+        'permissions_callback' => 'is_user_logged_in',
+
+      ) );
+  } );
+
+  function ea_delete_sell_type( $data ) {
+      $params = $data->get_params();
+      $id =  $params['id'];
+      SellType::find($id)->delete();
+      return "موفق";
+
+}
+
+########## end 2 ##############
+
+// feature
+########## 3 ##########
+
+add_action( 'rest_api_init', function () {
+  register_rest_route( 'api/v1', '/data/get-features', array(
+        'methods' => 'GET',
+        'callback' => 'ea_get_feature',
+        'permissions_callback' => 'is_user_logged_in',
+
+      ) );
+  } );
+
+  function ea_get_feature( $data ) {
+
+      $features = Fea::get();
+      return compact('features');
+
+}
+add_action( 'rest_api_init', function () {
+  register_rest_route( 'api/v1', '/data/add-feature', array(
+        'methods' => 'POST',
+        'callback' => 'ea_add_feature',
+        'permissions_callback' => 'is_user_logged_in',
+
+      ) );
+  } );
+
+  function ea_add_feature( $data ) {
+    $params = $data->get_params();
+    $c = $params["feature"];
+    $feature = Fea::create(['name' => $c]);
+    return compact('feature');
+
+}
+add_action( 'rest_api_init', function () {
+  register_rest_route( 'api/v1', '/data/edit-feature', array(
+        'methods' => 'POST',
+        'callback' => 'ea_edit_feature',
+        'permissions_callback' => 'is_user_logged_in',
+
+      ) );
+  } );
+
+  function ea_edit_feature( $data ) {
+    $params = $data->get_params();
+    $c = $params["feature"];
+    $id = $params["id"];
+    Fea::find($id)->update(['name' => $c]);
+    return "success";
+
+}
 
 
+add_action( 'rest_api_init', function () {
+  register_rest_route( 'api/v1', '/data/delete-feature', array(
+        'methods' => 'POST',
+        'callback' => 'ea_delete_feature',
+        'permissions_callback' => 'is_user_logged_in',
 
+      ) );
+  } );
+
+  function ea_delete_feature( $data ) {
+      $params = $data->get_params();
+      $id =  $params['id'];
+      Fea::find($id)->delete();
+      return "موفق";
+
+}
+
+########## end 3 ############
+//end feature
+
+
+// facilities
+###########  4 ############
+add_action( 'rest_api_init', function () {
+  register_rest_route( 'api/v1', '/data/get-facilities', array(
+        'methods' => 'GET',
+        'callback' => 'ea_get_facilities',
+        'permissions_callback' => 'is_user_logged_in',
+
+      ) );
+  } );
+
+  function ea_get_facilities( $data ) {
+
+      $facilities = Facility::get();
+      return compact('facilities');
+
+}
+add_action( 'rest_api_init', function () {
+  register_rest_route( 'api/v1', '/data/add-facility', array(
+        'methods' => 'POST',
+        'callback' => 'ea_add_facility',
+        'permissions_callback' => 'is_user_logged_in',
+
+      ) );
+  } );
+
+  function ea_add_facility( $data ) {
+    $params = $data->get_params();
+    $c = $params["facility"];
+    $facility = Facility::create(['name' => $c]);
+    return compact('facility');
+
+}
+add_action( 'rest_api_init', function () {
+  register_rest_route( 'api/v1', '/data/edit-facility', array(
+        'methods' => 'POST',
+        'callback' => 'ea_edit_facility',
+        'permissions_callback' => 'is_user_logged_in',
+
+      ) );
+  } );
+
+  function ea_edit_facility( $data ) {
+    $params = $data->get_params();
+    $c = $params["facility"];
+    $id = $params["id"];
+    Facility::find($id)->update(['name' => $c]);
+    return "success";
+
+}
+
+
+add_action( 'rest_api_init', function () {
+  register_rest_route( 'api/v1', '/data/delete-facility', array(
+        'methods' => 'POST',
+        'callback' => 'ea_delete_facility',
+        'permissions_callback' => 'is_user_logged_in',
+
+      ) );
+  } );
+
+  function ea_delete_facility( $data ) {
+      $params = $data->get_params();
+      $id =  $params['id'];
+      Facility::find($id)->delete();
+      return "موفق";
+
+}
+###########  end section 4 ###########
 // search form
 
 add_action( 'rest_api_init', function () {

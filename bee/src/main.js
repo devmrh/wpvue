@@ -4,6 +4,9 @@ import Error from './components/Error';
 import One from "./components/One";
 import Property from "./components/Property";
 import Search from "./components/Search";
+import SellType from './components/SellType';
+import Feature from './components/Feature';
+import Facility from './components/Facility';
 import Vue from "vue";
 import VueRouter from "vue-router";
 import Vuex from "vuex";
@@ -23,7 +26,11 @@ const router = new VueRouter({
     { path: "/search", component: Search },
     { path: "/manage", component: Property },
     { path: '/error', component: Error },
-    { path: '/category', component:  Category}
+    { path: '/category', component:  Category},
+    { path: '/selltype', component:  SellType},
+    { path: '/feature', component:  Feature},
+    { path: '/facilities', component:  Facility},
+
   ],
 });
 

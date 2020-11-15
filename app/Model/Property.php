@@ -9,7 +9,7 @@ class Property extends Model
 {
   protected $table = 'properties';
 
- // protected $appends = ["ProFacilities"];
+ protected $appends = ["username"];
 
   protected $fillable = [
     'title',
@@ -69,5 +69,14 @@ class Property extends Model
   public function facilities()
   {
     return $this->belongsToMany(Facility::class);
+  }
+
+  public function getUserNameAttribute()
+  {
+    return $this->getUser($this->user_id)->data->display_name;
+  }
+
+  public function getUser($id){
+    return get_userdata($id);
   }
 }
