@@ -17,6 +17,11 @@
             <router-link to="/amlak" class="text-white">افزودن ملک</router-link>
         </button>
       </div>
+      <div>
+        <button class="btn btn-primary btn-lg btn-block mt-3 cus-btn">
+            <router-link to="/category" class="text-white">مدیریت دسته ها</router-link>
+        </button>
+      </div>
     </div>
   </div>
 </template>
@@ -42,7 +47,6 @@ export default {
   justify-content: center;
   background: #fff;
   border: 1px solid #eee;
-  height: 200px;
   text-align: center;
   width: 100%;
   margin-bottom: 10px;

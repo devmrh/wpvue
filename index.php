@@ -1,7 +1,9 @@
 <?php
 /**
- * Plugin Name: amlak-new
- * Description: new amlak.
+ * Plugin Name: Amlak
+ * Description: DEV PREVIEW. Real Estate Advisor.
+ * Version: 1.0
+ * Author: Devmrh
  */
 
 use App\Db\Database;
@@ -248,7 +250,7 @@ function ea_get_properties( $data ) {
 
     $pagenum = isset( $_GET['page'] ) ? absint( $_GET['page'] ) : 1;
 
-    $limit = 2; // number of rows in page
+    $limit = 10; // number of rows in page
     $offset = ( $pagenum - 1 ) * $limit;
     $total = Property::get()->count();
 
@@ -300,6 +302,85 @@ add_action( 'rest_api_init', function () {
       return "موفق";
 
 }
+
+
+
+// Get property categories.
+add_action( 'rest_api_init', function () {
+  register_rest_route( 'api/v1', '/data/get-categories', array(
+        'methods' => 'GET',
+        'callback' => 'ea_get_categories',
+        'permissions_callback' => 'is_user_logged_in',
+
+      ) );
+  } );
+
+  function ea_get_categories( $data ) {
+
+      $categories = PropertyCategory::get();
+      return compact('categories');
+
+}
+add_action( 'rest_api_init', function () {
+  register_rest_route( 'api/v1', '/data/add-category', array(
+        'methods' => 'POST',
+        'callback' => 'ea_add_category',
+        'permissions_callback' => 'is_user_logged_in',
+
+      ) );
+  } );
+
+  function ea_add_category( $data ) {
+    $params = $data->get_params();
+    $c = $params["category"];
+    $category = PropertyCategory::create(['name' => $c]);
+    return compact('category');
+
+}
+add_action( 'rest_api_init', function () {
+  register_rest_route( 'api/v1', '/data/edit-category', array(
+        'methods' => 'POST',
+        'callback' => 'ea_edit_category',
+        'permissions_callback' => 'is_user_logged_in',
+
+      ) );
+  } );
+
+  function ea_edit_category( $data ) {
+    $params = $data->get_params();
+    $c = $params["category"];
+    $id = $params["id"];
+    PropertyCategory::find($id)->update(['name' => $c]);
+    return "success";
+
+}
+
+
+add_action( 'rest_api_init', function () {
+  register_rest_route( 'api/v1', '/data/delete-category', array(
+        'methods' => 'POST',
+        'callback' => 'ea_delete_category',
+        'permissions_callback' => 'is_user_logged_in',
+
+      ) );
+  } );
+
+  function ea_delete_category( $data ) {
+      $params = $data->get_params();
+      $id =  $params['id'];
+      PropertyCategory::find($id)->delete();
+      return "موفق";
+
+}
+
+
+
+// END of category
+
+
+
+
+
 
 
 // search form

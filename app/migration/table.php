@@ -42,7 +42,7 @@ DB::unprepared(file_get_contents($path));
 Capsule::schema()->create('property_categories', function($table){
   $table->bigIncrements('id');
   $table->string('name');
-  $table->string('slug');
+  $table->string('slug')->nullable();
   $table->timestamps();
 
 
@@ -50,7 +50,7 @@ Capsule::schema()->create('property_categories', function($table){
 Capsule::schema()->create('sell_types', function($table){
   $table->bigIncrements('id');
   $table->string('name');
-  $table->string('slug');
+  $table->string('slug')->nullable();
   $table->timestamps();
 
 
@@ -59,7 +59,7 @@ Capsule::schema()->create('sell_types', function($table){
 Capsule::schema()->create('features', function($table){
   $table->bigIncrements('id');
   $table->string('name');
-  $table->string('slug');
+  $table->string('slug')->nullable();
   $table->timestamps();
 
 
@@ -68,7 +68,7 @@ Capsule::schema()->create('features', function($table){
 Capsule::schema()->create('facilities', function($table){
   $table->bigIncrements('id');
   $table->string('name');
-  $table->string('slug');
+  $table->string('slug')->nullable();
   $table->timestamps();
 
 });

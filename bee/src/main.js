@@ -1,4 +1,5 @@
 import App from "./App.vue";
+import Category from "./components/Category";
 import Error from './components/Error';
 import One from "./components/One";
 import Property from "./components/Property";
@@ -11,6 +12,8 @@ Vue.config.productionTip = false;
 Vue.use(Vuex);
 Vue.use(VueRouter);
 
+window.Event = new Vue();
+
 
 const router = new VueRouter({
   mode: "history",
@@ -19,7 +22,8 @@ const router = new VueRouter({
     { path: "/amlak", component: One },
     { path: "/search", component: Search },
     { path: "/manage", component: Property },
-    { path: '/error', component: Error }
+    { path: '/error', component: Error },
+    { path: '/category', component:  Category}
   ],
 });
 
