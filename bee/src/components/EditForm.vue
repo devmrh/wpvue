@@ -147,7 +147,7 @@
           </div>
         </div>
         <div class="form-row distinct">
-          <div class="form-group col-md-6">
+          <div class="form-group col">
             <label for="province_id">استان</label>
             <select
               id="province_id"
@@ -165,7 +165,7 @@
               <option>...</option>
             </select>
           </div>
-          <div class="form-group col-md-6">
+          <div class="form-group col">
             <label for="city_id">شهر</label>
             <select
               id="city_id"
@@ -182,6 +182,46 @@
               </option>
               <option>...</option>
             </select>
+          </div>
+          <div class="form-group col">
+            <label for="neighborhooh_id">محله</label>
+            <select
+              id="neighborhooh_id"
+              @change="setNeighborhoodByCity($event)"
+              class="form-control"
+            >
+              <option
+                :value="item.id"
+                v-for="(item, index) in neighborhoods"
+                :key="index"
+                :selected="item.id == form.neighborhood_id"
+              >
+                {{ item.name }}
+              </option>
+              <option value="">...</option>
+            </select>
+          </div>
+          <div class="form-group col direction">
+            <div
+              v-for="(item, index) in directions"
+              :key="index"
+              class="custom-control custom-radio custom-control-inline"
+            >
+              <input
+                @change="setDirection($event)"
+                type="radio"
+                :value="item.id"
+                :id="'customRadioInline1' + index"
+                name="customRadioInline1"
+                class="custom-control-input"
+                :checked="item.id == form.direction_id"
+              />
+              <label
+                class="custom-control-label"
+                :for="'customRadioInline1' + index"
+                >{{ item.name }}</label
+              >
+            </div>
           </div>
         </div>
         <div class="form-row">
@@ -353,6 +393,7 @@ export default {
       features: [],
       cities: [],
       facilities: [],
+      neighborhoods: [],
       form: {
         id: "",
         title: "",
@@ -364,6 +405,7 @@ export default {
         rent_price: "",
         rent_label: "",
         province_id: "",
+        neighborhood_id: "",
         city_id: "",
         size: "",
         size_unit: "",
@@ -377,6 +419,7 @@ export default {
         description: "",
         special: "",
         facilities: [],
+        direction_id: "",
       },
       err: "",
       info: "",
@@ -384,6 +427,10 @@ export default {
   },
   props: ["editform"],
   methods: {
+    setDirection(e) {
+      let id = e.target.value;
+      this.form.direction_id = id;
+    },
     checkFacility(e) {
       if (e.target.checked) {
         this.form.facilities.push(e.target.value);
@@ -403,6 +450,13 @@ export default {
     },
     changeCity(e) {
       this.form.city_id = e.target.value;
+
+      api
+        .get(`api/v1/data/get-neighborhood-by-city?city=${e.target.value}`)
+        .then((response) => {
+          this.neighborhoods = response.data.neighborhoods;
+        })
+        .catch((error) => console.log(error));
     },
     getCityByProvince(e) {
       let id = e.target.value;
@@ -413,6 +467,11 @@ export default {
           this.cities = response.data.cities;
         })
         .catch((error) => console.log(error));
+    },
+    setNeighborhoodByCity(e) {
+      //get neighborhoodbycity
+      let id = e.target.value;
+      this.form.neighborhood_id = id;
     },
     handleSubmit() {
       //  this.form.user_id = this.user.ID;
@@ -445,6 +504,8 @@ export default {
         this.cities = response.data.cities;
         this.features = response.data.features;
         this.facilities = response.data.facilities;
+        this.directions = response.data.directions;
+        this.neighborhoods = response.data.neighborhoods;
       })
       .catch((error) => console.log(error));
 
@@ -485,6 +546,12 @@ export default {
 .distinct {
   background: #f7f7f7;
   padding: 5px;
+}
+.direction {
+  justify-content: center;
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
 }
 input,
 select {

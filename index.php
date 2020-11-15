@@ -8,8 +8,10 @@
 
 use App\Db\Database;
 use App\Model\City;
+use App\Model\Direction;
 use App\Model\Facility;
 use App\Model\Feature as Fea;
+use App\Model\Neighborhood;
 use App\Model\Property;
 use App\Model\PropertyCategory;
 use App\Model\Province;
@@ -72,7 +74,6 @@ add_shortcode( 'wpvue', 'func_wp_vue' );
 
 
 //get cities
-
 add_action( 'rest_api_init', function () {
   register_rest_route( 'api/v1', '/data/get-cities', array(
         'methods' => 'GET',
@@ -90,6 +91,24 @@ function ea_get_cities( $data ) {
     return $data;
 }
 
+
+// get neighborhoods according to city
+add_action( 'rest_api_init', function () {
+  register_rest_route( 'api/v1', '/data/get-neighborhood-by-city', array(
+        'methods' => 'GET',
+        'callback' => 'ea_get_neighborhood',
+        'permissions_callback' => 'is_user_logged_in',
+
+      ) );
+  } );
+
+function ea_get_neighborhood( $data ) {
+    $city_id = $data->get_param('city');
+    $data = [];
+    $nbs = Neighborhood::where('city_id', $city_id)->get()->toArray();
+    $data['neighborhoods'] = $nbs;
+    return $data;
+}
 
 // get data
 add_action( 'rest_api_init', function () {
@@ -114,12 +133,16 @@ add_action( 'rest_api_init', function () {
       $sellType = SellType::get()->toArray();
       $feature = Fea::get()->toArray();
       $facilities = Facility::get()->toArray();
+      $directions = Direction::get()->toArray();
+      $neighborhoods = Neighborhood::get()->toArray();
       $data['provinces'] = $province;
       $data['cities'] = $cities;
       $data['categories'] = $categories;
       $data['sellTypes'] = $sellType;
       $data['features'] = $feature;
       $data['facilities'] = $facilities;
+      $data['directions'] = $directions;
+      $data['neighborhoods'] = $neighborhoods;
       return $data;
   }
 
@@ -172,6 +195,8 @@ add_action( 'rest_api_init', function () {
         'address'=> $params['address'] ?? '',
         'description'=> $params['description'] ?? '',
         'user_id' => $params['user_id'],
+        'direction_id' => $params['direction_id'],
+        'neighborhood_id' => $params['neighborhood_id'],
         'special'=> $params['special']  == true ? 1 : 0,
       ]);
 
@@ -227,6 +252,9 @@ add_action( 'rest_api_init', function () {
         'address'=> $params['address'] ?? '',
         'description'=> $params['description'] ?? '',
         'special'=> $params['special']  == true ? 1 : 0,
+        'direction_id' => $params['direction_id'],
+        'neighborhood_id' => $params['neighborhood_id']
+
       ]);
 
       $facilities = $params['facilities'];
@@ -593,8 +621,62 @@ add_action( 'rest_api_init', function () {
 
 }
 ###########  end section 4 ###########
-// search form
 
+//section 5
+########### neighborhood #############3
+add_action( 'rest_api_init', function () {
+  register_rest_route( 'api/v1', '/data/get-provinces', array(
+        'methods' => 'GET',
+        'callback' => 'ea_get_provinces',
+        'permissions_callback' => 'is_user_logged_in',
+
+      ) );
+  } );
+
+  function ea_get_provinces( $data ) {
+
+      $provinces = Province::get()->toArray();
+      return compact('provinces');
+
+}
+
+add_action( 'rest_api_init', function () {
+  register_rest_route( 'api/v1', '/data/add-neighborhood', array(
+        'methods' => 'POST',
+        'callback' => 'ea_add_neighborhood',
+        'permissions_callback' => 'is_user_logged_in',
+
+      ) );
+  } );
+
+  function ea_add_neighborhood( $data ) {
+    $params = $data->get_params();
+    $c = $params["neighborhood"];
+    $city_id = $params["city_id"];
+    $neighborhood = Neighborhood::create(['name' => $c, 'city_id' => $city_id]);
+    return compact('neighborhood');
+
+}
+
+add_action( 'rest_api_init', function () {
+  register_rest_route( 'api/v1', '/data/delete-neighborhood', array(
+        'methods' => 'POST',
+        'callback' => 'ea_delete_neighborhood',
+        'permissions_callback' => 'is_user_logged_in',
+
+      ) );
+  } );
+
+  function ea_delete_neighborhood( $data ) {
+      $params = $data->get_params();
+      $id =  $params['id'];
+      Neighborhood::find($id)->delete();
+      return "موفق";
+
+}
+
+
+// search form
 add_action( 'rest_api_init', function () {
   register_rest_route( 'api/v1', '/data/search', array(
         'methods' => 'GET',

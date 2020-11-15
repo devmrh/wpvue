@@ -100,6 +100,8 @@ Capsule::schema()->create('properties', function($table){
   $table->unsignedBigInteger('city_id')->nullable();
   $table->unsignedBigInteger('province_id')->nullable();
   $table->unsignedBigInteger('direction_id')->nullable();
+  $table->unsignedBigInteger('neighborhood_id')->nullable();
+
 
   $table->string('title');
   $table->text('address')->nullable();
@@ -130,6 +132,7 @@ Capsule::schema()->create('properties', function($table){
   $table->foreign('city_id')->references('id')->on('cities')->onDelete('no action')->onUpdate('cascade');
   $table->foreign('province_id')->references('id')->on('provinces')->onDelete('no action')->onUpdate('cascade');
   $table->foreign('direction_id')->references('id')->on('directions')->onDelete('no action')->onUpdate('cascade');
+  $table->foreign('neighborhood_id')->references('id')->on('neighborhoods')->onDelete('no action')->onUpdate('cascade');
 
 });
 

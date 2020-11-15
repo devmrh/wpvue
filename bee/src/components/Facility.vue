@@ -1,6 +1,9 @@
 <template>
   <div class="row main-row">
-    <div class="col-md-12">
+    <div class="col-md-2">
+      <Panel></Panel>
+    </div>
+    <div class="col-md-10">
       <div class="cc-title">
         <div>مدیریت امکانات</div>
         <div class="add-new">
@@ -84,6 +87,7 @@ table thead tr th {
 <script>
 import api from "../services/api";
 import FacilityItem from "./FacilityItem";
+import Panel from "./Panel";
 export default {
   data() {
     return {
@@ -94,7 +98,7 @@ export default {
   mounted() {
     this.getFacility();
   },
-  components: { FacilityItem },
+  components: { FacilityItem,Panel },
   methods: {
     addNew() {
       if (this.facility.trim() != "") {

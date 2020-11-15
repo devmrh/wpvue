@@ -1,20 +1,19 @@
 <?php
 
-//require_once "../vendor/autoload.php";
 namespace App\Model;
 
 use Illuminate\Database\Eloquent\Model;
 
-class City extends Model
+class Direction extends Model
 {
+
+  protected $table = 'directions';
+
+
   protected $fillable = ['name'];
 
   public function properties()
   {
     return $this->hasMany(Property::class);
-  }
-
-  public function neighborhoods(){
-    return $this->hasMany(Neighborhood::class);
   }
 }

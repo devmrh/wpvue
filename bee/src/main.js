@@ -1,12 +1,13 @@
 import App from "./App.vue";
 import Category from "./components/Category";
 import Error from './components/Error';
+import Facility from './components/Facility';
+import Feature from './components/Feature';
+import Neighborhood from "./components/Neighborhood";
 import One from "./components/One";
 import Property from "./components/Property";
 import Search from "./components/Search";
 import SellType from './components/SellType';
-import Feature from './components/Feature';
-import Facility from './components/Facility';
 import Vue from "vue";
 import VueRouter from "vue-router";
 import Vuex from "vuex";
@@ -30,6 +31,7 @@ const router = new VueRouter({
     { path: '/selltype', component:  SellType},
     { path: '/feature', component:  Feature},
     { path: '/facilities', component:  Facility},
+    { path: '/neighborhoods', component: Neighborhood}
 
   ],
 });

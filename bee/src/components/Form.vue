@@ -144,7 +144,7 @@
           </div>
         </div>
         <div class="form-row distinct">
-          <div class="form-group col-md-6">
+          <div class="form-group col">
             <label for="province_id">استان</label>
             <select
               id="province_id"
@@ -158,10 +158,10 @@
               >
                 {{ item.name }}
               </option>
-              <option>...</option>
+              <option value="">...</option>
             </select>
           </div>
-          <div class="form-group col-md-6">
+          <div class="form-group col">
             <label for="city_id">شهر</label>
             <select
               id="city_id"
@@ -175,8 +175,46 @@
               >
                 {{ item.name }}
               </option>
-              <option>...</option>
+              <option value="">...</option>
             </select>
+          </div>
+          <div class="form-group col">
+            <label for="neighborhooh_id">محله</label>
+            <select
+              id="neighborhooh_id"
+              @change="setNeighborhoodByCity($event)"
+              class="form-control"
+            >
+              <option
+                :value="item.id"
+                v-for="(item, index) in neighborhoods"
+                :key="index"
+              >
+                {{ item.name }}
+              </option>
+              <option value="">...</option>
+            </select>
+          </div>
+          <div class="form-group col direction">
+            <div
+              v-for="(item, index) in directions"
+              :key="index"
+              class="custom-control custom-radio custom-control-inline"
+            >
+              <input
+                @change="setDirection($event)"
+                type="radio"
+                :value="item.id"
+                :id="'customRadioInline1' + index"
+                name="customRadioInline1"
+                class="custom-control-input"
+              />
+              <label
+                class="custom-control-label"
+                :for="'customRadioInline1' + index"
+                >{{ item.name }}</label
+              >
+            </div>
           </div>
         </div>
         <div class="form-row">
@@ -308,7 +346,7 @@
             </label>
           </div>
         </div>
-        <button type="submit" class="btn btn-lg btn-primary">ذخیره فرم</button>
+        <button type="submit" class="btn btn-lg btn-primary">ذخیره ملک</button>
         <div class="my-2 font-weight-bold text-success" v-if="info">
           {{ info }}
         </div>
@@ -333,30 +371,34 @@ export default {
       features: [],
       cities: [],
       facilities: [],
+      directions: [],
+      neighborhoods: [],
       form: {
-        title: "",
-        property_category_id: "",
-        sell_type_id: "",
-        feature_id: "",
-        price: "",
-        price_label: "",
-        rent_price: "",
-        rent_label: "",
-        province_id: "",
-        city_id: "",
-        size: "",
-        size_unit: "",
-        bed_count: "",
-        bath_count: "",
-        parking_count: "",
-        owner: "",
-        phone: "",
-        build_time: "",
-        address: "",
-        description: "",
-        special: "",
+        title: null,
+        property_category_id: null,
+        sell_type_id: null,
+        feature_id: null,
+        price: null,
+        price_label: null,
+        rent_price: null,
+        rent_label: null,
+        province_id: null,
+        neighborhood_id: null,
+        city_id: null,
+        size: null,
+        size_unit: null,
+        bed_count: null,
+        bath_count: null,
+        parking_count: null,
+        owner: null,
+        phone: null,
+        build_time: null,
+        address: null,
+        description: null,
+        special: null,
         facilities: [],
-        user_id: "",
+        user_id: null,
+        direction_id: null,
       },
       info: "",
       err: "",
@@ -364,6 +406,10 @@ export default {
   },
   props: {},
   methods: {
+    setDirection(e) {
+      let id = e.target.value;
+      this.form.direction_id = id;
+    },
     checkFacility(e) {
       if (e.target.checked) {
         this.form.facilities.push(e.target.value);
@@ -383,6 +429,13 @@ export default {
     },
     changeCity(e) {
       this.form.city_id = e.target.value;
+
+      api
+        .get(`api/v1/data/get-neighborhood-by-city?city=${e.target.value}`)
+        .then((response) => {
+          this.neighborhoods = response.data.neighborhoods;
+        })
+        .catch((error) => console.log(error));
     },
     getCityByProvince(e) {
       let id = e.target.value;
@@ -393,6 +446,11 @@ export default {
           this.cities = response.data.cities;
         })
         .catch((error) => console.log(error));
+    },
+    setNeighborhoodByCity(e) {
+      //get neighborhoodbycity
+      let id = e.target.value;
+      this.form.neighborhood_id = id;
     },
     handleSubmit() {
       this.form.user_id = this.user.ID;
@@ -422,6 +480,7 @@ export default {
         this.provinces = response.data.provinces;
         this.features = response.data.features;
         this.facilities = response.data.facilities;
+        this.directions = response.data.directions;
       })
       .catch((error) => console.log(error));
 
@@ -462,6 +521,12 @@ export default {
 .distinct {
   background: #f7f7f7;
   padding: 5px;
+}
+.direction {
+  justify-content: center;
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
 }
 input,
 select {

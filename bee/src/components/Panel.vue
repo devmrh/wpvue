@@ -1,20 +1,19 @@
 <template>
-  <div class="container">
+  <div class="">
     <div class="control-box shadow-sm">
       <div>
         <button class="btn btn-primary btn-lg btn-block mb-3 cus-btn">
+            <router-link to="/amlak" class="text-white">افزودن ملک</router-link>
+        </button>
+      </div>
+      <div>
+        <button class="btn btn-primary btn-lg btn-block mb-3 cus-btn">
           <router-link to="/search" class="text-white">صفحه جستجو</router-link>
-
         </button>
       </div>
       <div>
         <button class="btn btn-primary btn-lg btn-block cus-btn">
             <router-link to="/manage" class="text-white">مدیریت</router-link>
-        </button>
-      </div>
-      <div>
-        <button class="btn btn-primary btn-lg btn-block mt-3 cus-btn">
-            <router-link to="/amlak" class="text-white">افزودن ملک</router-link>
         </button>
       </div>
       <div>
@@ -35,6 +34,11 @@
       <div>
         <button class="btn btn-primary btn-lg btn-block mt-3 cus-btn">
             <router-link to="/facilities" class="text-white">مدیریت امکانات ملک</router-link>
+        </button>
+      </div>
+      <div>
+        <button class="btn btn-primary btn-lg btn-block mt-3 cus-btn">
+            <router-link to="/neighborhoods" class="text-white">مدیریت محل </router-link>
         </button>
       </div>
     </div>

@@ -33,7 +33,9 @@ class Property extends Model
     'address',
     'description',
     'special',
-    'user_id'
+    'user_id',
+    'direction_id',
+    'neighborhood_id'
   ];
 
   public function city()
@@ -59,6 +61,11 @@ class Property extends Model
   public function feature()
   {
     return $this->belongsTo(Feature::class);
+  }
+
+  public function direction()
+  {
+    return $this->belongsTo(Direction::class);
   }
 
   // public function getProFacilitiesAttribute()
