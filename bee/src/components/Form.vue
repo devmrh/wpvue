@@ -73,7 +73,7 @@
         <div class="form-row mb-2 mt-2 distinct">
           <div class="form-group col-md-3">
             <label for="facilities">امکانات</label>
-            <div class="d-flex">
+            <div class="d-flex" style="flex-wrap: wrap;">
               <div
                 class="form-check"
                 v-for="(item, index) in facilities"

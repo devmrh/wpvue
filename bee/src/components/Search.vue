@@ -273,7 +273,7 @@
               >
                 <div class="dist-1 d-flex">
                   <div class="form-group col">
-                    <label for="from_price">قیمت ملک</label>
+                    <label for="from_price">قیمت ملک به تومان</label>
                     <input
                       type="text"
                       name="from_price"
@@ -286,7 +286,7 @@
                   </div>
                   <div class="mx-2">تا</div>
                   <div class="form-group col">
-                    <label for="price">قیمت ملک</label>
+                    <label for="price">قیمت ملک به تومان</label>
                     <input
                       type="text"
                       name="to_price"
@@ -300,7 +300,7 @@
                 </div>
                 <div class="dist-2 d-flex">
                   <div class="form-group col">
-                    <label for="from_rent_price">قیمت اجاره</label>
+                    <label for="from_rent_price">قیمت اجاره به تومان</label>
                     <input
                       type="text"
                       name="from_rent_price"
@@ -313,7 +313,7 @@
                   </div>
                   <div class="mx-2">تا</div>
                   <div class="form-group col">
-                    <label for="to_rent_price">قیمت اجاره</label>
+                    <label for="to_rent_price">قیمت اجاره به تومان</label>
                     <input
                       type="text"
                       name="to_rent_price"
@@ -331,7 +331,7 @@
               <!-- start part 4 -->
               <div class="form-row align-items-center distinct">
                 <div class="form-group col">
-                  <label for="from_size">متراژ</label>
+                  <label for="from_size">متراژ ملک/بنا</label>
                   <input
                     type="number"
                     name="from_size"
@@ -343,7 +343,7 @@
                 </div>
                 <div class="mx-2">تا</div>
                 <div class="form-group col">
-                  <label for="to_size">متراژ</label>
+                  <label for="to_size">متراژ ملک/بنا</label>
                   <input
                     type="number"
                     name="to_size"
@@ -745,13 +745,13 @@ export default {
 .dist-1 {
   align-items: center;
   border-left: 3px dashed #eee;
-  background: #fff8e8;
+  background: #fffdf6;
   padding: 15px 5px;
   margin-bottom: 5px;
 }
 .dist-2 {
   align-items: center;
-  background: #fff8e8;
+  background: #fffdf6;
   padding: 15px 5px;
   margin-bottom: 5px;
 }
