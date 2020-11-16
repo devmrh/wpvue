@@ -121,7 +121,7 @@ Capsule::schema()->create('properties', function($table){
   $table->string('bath_count')->nullable();
   $table->string('parking_count')->nullable();
   $table->string('bed_count')->nullable();
-  $table->string('build_time')->nullable();
+  $table->date('build_time')->nullable();
 
   $table->boolean('special')->default(0);
   $table->timestamps();

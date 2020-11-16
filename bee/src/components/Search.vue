@@ -44,6 +44,48 @@
                     <option>...</option>
                   </select>
                 </div>
+
+                <div class="form-group col">
+                  <label for="neighborhooh_id">محله</label>
+                  <div v-if="neighborhoods.length < 1">شهر مشخص نشده</div>
+                  <div
+                    class="form-check"
+                    v-for="(item, index) in neighborhoods"
+                    :key="index"
+                  >
+                    <input
+                      class="form-check-input"
+                      @change="setNeighborhoodByCity($event)"
+                      type="checkbox"
+                      :id="'neighborhooh_id' + index"
+                      :value="item.id"
+                    />
+                    <label class="form-check-label" :for="'gridCheck' + index">
+                      {{ item.name }}
+                    </label>
+                  </div>
+                </div>
+                <div class="form-group col direction">
+                  <div
+                    v-for="(item, index) in directions"
+                    :key="index"
+                    class="custom-control custom-radio custom-control-inline"
+                  >
+                    <input
+                      @change="setDirection($event)"
+                      type="radio"
+                      :value="item.id"
+                      :id="'customRadioInline1' + index"
+                      name="customRadioInline1"
+                      class="custom-control-input"
+                    />
+                    <label
+                      class="custom-control-label"
+                      :for="'customRadioInline1' + index"
+                      >{{ item.name }}</label
+                    >
+                  </div>
+                </div>
               </div>
               <div class="form-group">
                 <label for="address">جستجو در نشانی</label>
@@ -58,34 +100,83 @@
             </div>
             <div class="col-md-8">
               <div class="form-row align-items-center distinct">
-                <div class="form-group">
-                  <label for="from_build_time">تاریخ ساخت بنا</label>
-                  <input
-                    type="text"
-                    name="from_build_time"
-                    v-model="form.from_build_time"
-                    class="form-control"
-                    id="from_build_time"
-                    placeholder="تاریخ ساخت بنا"
-                  />
+                <div class="col-md-6 dist-1">
+                  <div class="row" style="justify-content: center">
+                    <div class="form-group fgd">
+                      <label for="from_build_time">تاریخ ثبت</label>
+                      <!-- <input
+                        type="text"
+                        v-model="form.from_register_time"
+                        class="form-control"
+                        id="from_build_time"
+                        placeholder="تاریخ ثبت"
+                      /> -->
+                      <pdatepicker
+                        placeholder="تاریخ ثبت"
+                        class="fgd"
+                        v-model="form.from_register_time"
+                      ></pdatepicker>
+                    </div>
+                    <div class="mx-4" style="align-self: center">الی</div>
+                    <div class="form-group fgd">
+                      <label for="to_build_time">تاریخ ثبت</label>
+                      <!-- <input
+                        type="text"
+                        v-model="form.to_register_time"
+                        class="form-control"
+                        id="to_build_time"
+                        placeholder="تاریخ ثبت"
+                      /> -->
+                      <pdatepicker
+                        placeholder="تاریخ ثبت"
+                        class="fgd"
+                        v-model="form.to_register_time"
+                      ></pdatepicker>
+                    </div>
+                  </div>
                 </div>
-                <div class="mx-4">الی</div>
-                <div class="form-group">
-                  <label for="to_build_time">تاریخ ساخت بنا</label>
-                  <input
-                    type="text"
-                    name="to_build_time"
-                    v-model="form.to_build_time"
-                    class="form-control"
-                    id="to_build_time"
-                    placeholder="تاریخ ساخت بنا"
-                  />
+                <div class="col-md-6 dist-1">
+                  <div class="row" style="justify-content: center">
+                    <div class="form-group fgd">
+                      <label for="from_build_time">تاریخ ساخت بنا</label>
+                      <!-- <input
+                        type="text"
+                        name="from_build_time"
+                        v-model="form.from_build_time"
+                        class="form-control"
+                        id="from_build_time"
+                        placeholder="تاریخ ساخت بنا"
+                      /> -->
+                      <pdatepicker
+                        placeholder="تاریخ ساخت بنا"
+                        class="fgd"
+                        v-model="form.from_build_time"
+                      ></pdatepicker>
+                    </div>
+                    <div class="mx-4" style="align-self: center">الی</div>
+                    <div class="form-group fgd">
+                      <label for="to_build_time">تاریخ ساخت بنا</label>
+                      <!-- <input
+                        type="text"
+                        name="to_build_time"
+                        v-model="form.to_build_time"
+                        class="form-control"
+                        id="to_build_time"
+                        placeholder="تاریخ ساخت بنا"
+                      /> -->
+                      <pdatepicker
+                        placeholder="تاریخ ساخت بنا"
+                        class="fgd"
+                        v-model="form.to_build_time"
+                      ></pdatepicker>
+                    </div>
+                  </div>
                 </div>
               </div>
 
               <!-- part 2 -->
               <div class="form-row distinct">
-                <div class="form-group col-md-3">
+                <div class="form-group col-md-3 dist-1">
                   <label for="category">دسته</label>
                   <select
                     id="category"
@@ -103,7 +194,7 @@
                     <option value="">مشخص نشده</option>
                   </select>
                 </div>
-                <div class="form-group col-md-3">
+                <div class="form-group col-md-3 dist-1">
                   <label for="feature">ویژگی ملک</label>
                   <select
                     id="feature"
@@ -121,34 +212,35 @@
                     <option value="">مشخص نشده</option>
                   </select>
                 </div>
-                <div class="form-group col-md-3">
+                <div class="form-group col-md-3 dist-1">
                   <label for="sell_type">نوع معامله</label>
-
-                  <div
-                    class="form-check"
-                    v-for="(item, index) in sellTypes"
-                    :key="index"
-                  >
-                    <input
-                      class="form-check-input"
-                      @change="checkSellType($event)"
-                      type="checkbox"
-                      :id="'gridCheck' + index"
-                      :value="item.id"
-                    />
-                    <label
-                      class="form-check-label"
-                      name="special"
-                      :for="'gridCheck' + index"
+                  <div class="d-flex" style="flex-wrap: wrap;">
+                    <div
+                      class="form-check"
+                      v-for="(item, index) in sellTypes"
+                      :key="index"
                     >
-                      {{ item.name }}
-                    </label>
+                      <input
+                        class="form-check-input"
+                        @change="checkSellType($event)"
+                        type="checkbox"
+                        :id="'gridCheck' + index"
+                        :value="item.id"
+                      />
+                      <label
+                        class="form-check-label"
+                        name="special"
+                        :for="'gridCheck' + index"
+                      >
+                        {{ item.name }}
+                      </label>
+                    </div>
                   </div>
                 </div>
 
-                <div class="form-group col-md-3">
+                <div class="form-group col-md-3 dist-1">
                   <label for="facilities">امکانات</label>
-                  <div class="d-flex">
+                  <div class="d-flex" style="flex-wrap: wrap;">
                     <div
                       class="form-check"
                       v-for="(item, index) in facilities"
@@ -183,24 +275,26 @@
                   <div class="form-group col">
                     <label for="from_price">قیمت ملک</label>
                     <input
-                      type="number"
+                      type="text"
                       name="from_price"
                       class="form-control"
                       id="from_price"
                       v-model="form.from_price"
                       placeholder="قیمت"
+                      @keyup="handleChange($event, 'from_price')"
                     />
                   </div>
                   <div class="mx-2">تا</div>
                   <div class="form-group col">
                     <label for="price">قیمت ملک</label>
                     <input
-                      type="number"
+                      type="text"
                       name="to_price"
                       class="form-control"
                       id="to_price"
                       v-model="form.to_price"
                       placeholder="قیمت"
+                      @keyup="handleChange($event, 'to_price')"
                     />
                   </div>
                 </div>
@@ -214,6 +308,7 @@
                       id="from_rent_price"
                       v-model="form.from_rent_price"
                       placeholder="قیمت اجاره"
+                      @keyup="handleChange($event, 'from_rent_price')"
                     />
                   </div>
                   <div class="mx-2">تا</div>
@@ -226,6 +321,7 @@
                       id="to_rent_price"
                       v-model="form.to_rent_price"
                       placeholder="قیمت اجاره"
+                      @keyup="handleChange($event, 'to_rent_price')"
                     />
                   </div>
                 </div>
@@ -254,6 +350,31 @@
                     class="form-control"
                     id="to_size"
                     v-model="form.to_size"
+                    placeholder="متراژ"
+                  />
+                </div>
+              </div>
+              <div class="form-row align-items-center">
+                <div class="form-group col">
+                  <label for="from_size_g">متراژ زمین</label>
+                  <input
+                    type="number"
+                    name="from_size"
+                    class="form-control"
+                    id="from_size_g"
+                    v-model="form.from_size_g"
+                    placeholder="متراژ"
+                  />
+                </div>
+                <div class="mx-2">تا</div>
+                <div class="form-group col">
+                  <label for="to_size_g">متراژ زمین</label>
+                  <input
+                    type="number"
+                    name="to_size"
+                    class="form-control"
+                    id="to_size_g"
+                    v-model="form.to_size_g"
                     placeholder="متراژ"
                   />
                 </div>
@@ -384,6 +505,8 @@ export default {
       features: [],
       cities: [],
       facilities: [],
+      neighborhoods: [],
+      directions: [],
       viewstatus: "search",
       searchdata: [],
       allow: null,
@@ -396,6 +519,8 @@ export default {
         to_rent_price: "",
         from_size: "",
         to_size: "",
+        from_size_g: "",
+        to_size_g: "",
         bed_count: "",
         bath_count: "",
         parking_count: "",
@@ -409,6 +534,10 @@ export default {
         province_id: "",
         facilities: [],
         sellTypes: [],
+        neighborhoods: [],
+        direction_id: "",
+        from_register_time: "",
+        to_register_time: "",
       },
     };
   },
@@ -425,10 +554,33 @@ export default {
         this.provinces = response.data.provinces;
         this.features = response.data.features;
         this.facilities = response.data.facilities;
+        this.directions = response.data.directions;
+        //this.neighborhoods = response.data.neighborhoods;
       })
       .catch((error) => console.log(error));
   },
   methods: {
+    handleChange(e, name) {
+      let res = e.target.value
+        .toString()
+        .replace(/\D/g, "")
+        .replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+      this.$set(this.form, name, res);
+    },
+    setDirection(e) {
+      let id = e.target.value;
+      this.form.direction_id = id;
+    },
+    setNeighborhoodByCity(e) {
+      if (e.target.checked) {
+        this.form.neighborhoods.push(e.target.value);
+      } else {
+        let filter = this.form.neighborhoods.filter(
+          (el) => el != e.target.value
+        );
+        this.form.neighborhoods = filter;
+      }
+    },
     childEvent(value) {
       this.viewstatus = value;
     },
@@ -456,6 +608,13 @@ export default {
     },
     changeCity(e) {
       this.form.city_id = e.target.value;
+
+      api
+        .get(`api/v1/data/get-neighborhood-by-city?city=${e.target.value}`)
+        .then((response) => {
+          this.neighborhoods = response.data.neighborhoods;
+        })
+        .catch((error) => console.log(error));
     },
     getCityByProvince(e) {
       let id = e.target.value;
@@ -579,22 +738,37 @@ export default {
   margin: 0 auto;
 }
 .distinct {
-  border-bottom: 2px solid #eee;
+  border-bottom: 2px dashed #eee;
   padding-bottom: 5px;
   margin-bottom: 10px;
 }
 .dist-1 {
   align-items: center;
   border-left: 3px dashed #eee;
+  background: #fff8e8;
+  padding: 15px 5px;
+  margin-bottom: 5px;
 }
 .dist-2 {
   align-items: center;
+  background: #fff8e8;
+  padding: 15px 5px;
+  margin-bottom: 5px;
 }
 .bounce-enter-active {
   animation: bounce-in 0.5s;
 }
 .bounce-leave-active {
   animation: bounce-in 0.5s reverse;
+}
+.direction {
+  justify-content: center;
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+}
+.fgd {
+  width: 165px;
 }
 @keyframes bounce-in {
   0% {

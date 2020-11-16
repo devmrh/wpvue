@@ -19,7 +19,12 @@ use App\Model\SellType;
 use Illuminate\Database\Capsule\Manager as DB;
 
 require_once("vendor/autoload.php");
-Database::init();
+try {
+  Database::init();
+} catch (\Exception $e) {
+  die();
+  // please config database correctly
+}
 
 //Register scripts to use
 function func_load_vuescripts() {
@@ -172,15 +177,30 @@ add_action( 'rest_api_init', function () {
         return wp_send_json_error("استان نمیتواند خالی باشد", 422);
       }
 
+      $build_time = $params['build_time'] ?? null;
+      if($build_time){
+        $bt = str_replace("/","-",$build_time);
+        $build_time = \Morilog\Jalali\CalendarUtils::createCarbonFromFormat('Y-m-d', $bt)->format('Y-m-d');
+
+      }
+
+      if($params['price']){
+        $price = str_replace(",","",$params['price']);
+      }
+
+      if($params['rent_price']){
+        $rent_price = str_replace(",","",$params['rent_price']);
+      }
+
 
       $property = Property::create([
         'title'=> $params['title'],
         'property_category_id'=> $params['property_category_id'] ?? null,
         'sell_type_id'=> $params['sell_type_id'] ?? null,
         'feature_id'=> $params['feature_id'] ?? null,
-        'price'=> $params['price'] ?? '',
+        'price'=> $price ?? '',
         'price_label'=> $params['price_label'] ?? '',
-        'rent_price'=> $params['rent_price'] ?? '',
+        'rent_price'=> $rent_price ?? '',
         'rent_label'=> $params['rent_label'] ?? '',
         'province_id'=> $params['province_id'] ?? '',
         'city_id'=> $params['city_id'] ?? '',
@@ -191,7 +211,7 @@ add_action( 'rest_api_init', function () {
         'parking_count'=> $params['parking_count'] ?? '',
         'owner'=> $params['owner'] ?? '',
         'phone'=> $params['phone'] ?? '',
-        'build_time'=> $params['build_time'] ?? '',
+        'build_time'=> $build_time?? '',
         'address'=> $params['address'] ?? '',
         'description'=> $params['description'] ?? '',
         'user_id' => $params['user_id'],
@@ -230,14 +250,29 @@ add_action( 'rest_api_init', function () {
         return wp_send_json_error("استان نمیتواند خالی باشد", 422);
       }
 
+      $build_time = $params['build_time'] ?? null;
+      if($build_time){
+        $bt = str_replace("/","-",$build_time);
+        $build_time = \Morilog\Jalali\CalendarUtils::createCarbonFromFormat('Y-m-d', $bt)->format('Y-m-d');
+
+      }
+
+      if($params['price']){
+        $price = str_replace(",","",$params['price']);
+      }
+
+      if($params['rent_price']){
+        $rent_price = str_replace(",","",$params['rent_price']);
+      }
+
       Property::find($form_id)->update([
         'title'=> $params['title'],
         'property_category_id'=> $params['property_category_id'] ?? null,
         'sell_type_id'=> $params['sell_type_id'] ?? null,
         'feature_id'=> $params['feature_id'] ?? null,
-        'price'=> $params['price'] ?? '',
+        'price'=> $price ?? '',
         'price_label'=> $params['price_label'] ?? '',
-        'rent_price'=> $params['rent_price'] ?? '',
+        'rent_price'=> $rent_price ?? '',
         'rent_label'=> $params['rent_label'] ?? '',
         'province_id'=> $params['province_id'] ?? null,
         'city_id'=> $params['city_id'] ?? null,
@@ -248,7 +283,7 @@ add_action( 'rest_api_init', function () {
         'parking_count'=> $params['parking_count'] ?? '',
         'owner'=> $params['owner'] ?? '',
         'phone'=> $params['phone'] ?? '',
-        'build_time'=> $params['build_time'] ?? '',
+        'build_time'=> $build_time ?? '',
         'address'=> $params['address'] ?? '',
         'description'=> $params['description'] ?? '',
         'special'=> $params['special']  == true ? 1 : 0,
@@ -689,15 +724,50 @@ add_action( 'rest_api_init', function () {
   function ea_get_data_search( $data ) {
     $params = $data->get_params();
 
+    $from_build_time = $params['from_build_time'];
+    $to_build_time = $params['to_build_time'];
 
-    $from_build_time = (int)$params['from_build_time'];
-    $to_build_time = (int)$params['to_build_time'];
+    $form_register_time = $params['from_register_time'];
+    $to_register_time = $params['to_register_time'];
+
+    // from build time - to build time - from register time - to register time
+
+    if($from_build_time){
+      $fbt = str_replace("/","-",$from_build_time);
+      $from_build_time = \Morilog\Jalali\CalendarUtils::createCarbonFromFormat('Y-m-d', $fbt)->format('Y-m-d');
+
+    }
+    if($to_build_time){
+      $fbt = str_replace("/","-",$to_build_time);
+      $to_build_time = \Morilog\Jalali\CalendarUtils::createCarbonFromFormat('Y-m-d', $fbt)->format('Y-m-d');
+
+    }else{
+        $to_build_time = date("Y-m-d");
+    }
+
+    if($form_register_time){
+      $fbt = str_replace("/","-",$form_register_time);
+      $form_register_time = \Morilog\Jalali\CalendarUtils::createCarbonFromFormat('Y-m-d', $fbt)->format('Y-m-d');
+
+    }
+    if($to_register_time){
+      $fbt = str_replace("/","-",$to_register_time);
+      $to_register_time = \Morilog\Jalali\CalendarUtils::createCarbonFromFormat('Y-m-d', $fbt)->format('Y-m-d');
+
+    }else{
+      $to_register_time = date("Y-m-d");
+    }
+
+
+
     $from_price = (int)$params['from_price'];
     $to_price = (int)$params['to_price'];
     $from_rent_price = (int)$params['from_rent_price'];
     $to_rent_price = (int)$params['to_rent_price'];
     $from_size = (int)$params['from_size'];
     $to_size =  (int)$params['to_size'];
+    $from_size_g = (int)$params['from_size_g'];
+    $to_size_g =  (int)$params['to_size_g'];
     $bed_count = $params['bed_count'];
     $bath_count = $params['bath_count'];
     $parking_count = $params['parking_count'];
@@ -709,27 +779,35 @@ add_action( 'rest_api_init', function () {
     $feature_id = $params['feature_id'];
     $city_id = $params['city_id'];
     $province_id = $params['province_id'];
+    $direction_id = $params['direction_id'];
 
     $facilities = $params['facilities']; // array
     $sellTypes = $params['sellTypes'] ?? []; // array
+    $neighborhoods = $params['neighborhoods'] ?? []; // array
 
 
     //return $facilities;
     $query = Property::query();
     // We search value in multiple columns.
 
-    if( is_array($facilities) && count($facilities) > 0){
-     // eval("\$facilities = $facilities;");
+    if($from_price){
+      $from_price = str_replace(",","",$from_price);
+    }
+    if($to_price){
+      $to_price = str_replace(",","",$to_price);
+    }
+    if($from_rent_price){
+      $from_rent_price = str_replace(",","",$from_rent_price);
+    }
+    if($to_rent_price){
+      $to_rent_price = str_replace(",","",$to_rent_price);
+    }
 
+
+    if( is_array($facilities) && count($facilities) > 0){
     }else{
       $facilities = [];
-
     }
-    // $list = '('.implode(', ', $facilities).')';
-
-    // return $list;
-   // return $facilities;
-
 
     $query->when($owner, function ($q, $search) {
       return $q->where('owner', 'like', '%'.$search.'%' );
@@ -770,19 +848,30 @@ add_action( 'rest_api_init', function () {
       return $q->where('province_id', $search );
 
     });
+    $query->when($direction_id, function ($q, $search) {
+      return $q->where('direction_id', $search );
+
+    });
 
     $query->when($sellTypes, function ($q, $search) {
       return  $q->whereIn('sell_type_id', $search);
 
     });
-
+    $query->when($neighborhoods, function ($q, $search) {
+      return  $q->whereIn('neighborhood_id', $search);
+    });
 
     if($from_build_time  || $to_build_time ){
-      if(!$to_build_time){
-        $to_build_time = 100000000000;
-      }
-      $query->whereRaw("(build_time <= ? AND build_time >= ?) ", [$to_build_time, $from_build_time]);
+
+      $query->whereBetween('build_time', [$from_build_time, $to_build_time]);
     }
+
+    if($form_register_time  || $to_register_time ){
+
+      $query->whereBetween('created_at', [$form_register_time, $to_register_time ]);
+    }
+
+
     if($from_price  || $to_price ){
       if(!$to_price){
         $to_price = 100000000000;
@@ -801,6 +890,13 @@ add_action( 'rest_api_init', function () {
         $to_size = 1000;
       }
       $query->whereRaw("(size <= ? AND size >= ?) ", [$to_size  , $from_size ]);
+    }
+    
+    if($from_size_g  || $to_size_g ){
+      if(!$to_size_g){
+        $to_size_g = 1000;
+      }
+      $query->whereRaw("(size <= ? AND size >= ?) ", [$to_size_g  , $from_size_g ]);
     }
 
    // $data = [];

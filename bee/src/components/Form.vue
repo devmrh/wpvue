@@ -101,12 +101,13 @@
           <div class="form-group col">
             <label for="price">قیمت ملک</label>
             <input
-              type="number"
+              type="text"
               name="price"
               class="form-control"
               id="price"
               v-model="form.price"
               placeholder="قیمت"
+              @keyup="handleChange($event, 'price')"
             />
           </div>
           <div class="form-group col">
@@ -129,6 +130,7 @@
               id="rent_price"
               v-model="form.rent_price"
               placeholder="قیمت اجاره"
+              @keyup="handleChange($event, 'rent_price')"
             />
           </div>
           <div class="form-group col">
@@ -303,14 +305,19 @@
         </div>
         <div class="form-group">
           <label for="build_time">تاریخ ساخت بنا</label>
-          <input
+          <!-- <input
             type="text"
             name="build_time"
             v-model="form.build_time"
             class="form-control"
             id="build_time"
             placeholder="تاریخ ساخت بنا"
-          />
+          /> -->
+          <pdatepicker
+            placeholder="تاریخ ساخت"
+            class="fgd"
+            v-model="form.build_time"
+          ></pdatepicker>
         </div>
         <div class="form-group">
           <label for="address">آدرس</label>
@@ -392,7 +399,7 @@ export default {
         parking_count: null,
         owner: null,
         phone: null,
-        build_time: null,
+        build_time: window.moment().format("jYYYY/jM/jD"),
         address: null,
         description: null,
         special: null,
@@ -406,6 +413,13 @@ export default {
   },
   props: {},
   methods: {
+    handleChange(e, name) {
+      let res = e.target.value
+        .toString()
+        .replace(/\D/g, "")
+        .replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+      this.$set(this.form, name, res);
+    },
     setDirection(e) {
       let id = e.target.value;
       this.form.direction_id = id;
@@ -483,6 +497,7 @@ export default {
         this.directions = response.data.directions;
       })
       .catch((error) => console.log(error));
+    this.form.build_time = window.moment().format("jYYYY/jM/jD");
 
     // console.log(this.user);
     //this.user_id = this.user.user.ID;
@@ -527,6 +542,9 @@ export default {
   display: flex;
   align-items: center;
   flex-wrap: wrap;
+}
+.fgd {
+  width: 165px;
 }
 input,
 select {
