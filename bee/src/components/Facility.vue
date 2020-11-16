@@ -3,7 +3,7 @@
     <div class="col-md-2">
       <Panel></Panel>
     </div>
-    <div class="col-md-10">
+    <div class="col-md-10" v-if="allow">
       <div class="cc-title">
         <div>مدیریت امکانات</div>
         <div class="add-new">
@@ -36,6 +36,9 @@
           </tbody>
         </table>
       </div>
+    </div>
+    <div class="col-md-10" v-if="!allow">
+      <div class="err">شما دسترسی کافی برای مشاهده این صفحه را ندارید</div>
     </div>
   </div>
 </template>
@@ -88,17 +91,22 @@ table thead tr th {
 import api from "../services/api";
 import FacilityItem from "./FacilityItem";
 import Panel from "./Panel";
+import { mapState } from "vuex";
+
 export default {
   data() {
     return {
       facilities: [],
       facility: "",
+      allow: null,
     };
   },
   mounted() {
+    this.allow = this.check();
+    if (!this.allow) return false;
     this.getFacility();
   },
-  components: { FacilityItem,Panel },
+  components: { FacilityItem, Panel },
   methods: {
     addNew() {
       if (this.facility.trim() != "") {
@@ -119,6 +127,18 @@ export default {
         })
         .catch((e) => console.log(e));
     },
+    findOne(haystack, arr) {
+      return arr.some(function (v) {
+        return haystack.indexOf(v) >= 0;
+      });
+    },
+    check() {
+      if (!this.findOne(this.roles, ["administrator"])) {
+        // return this.$router.push("/error");
+        return false;
+      }
+      return true;
+    },
   },
   created() {
     Event.$on("update-facility", (data) => {
@@ -131,6 +151,11 @@ export default {
       let newState = this.facilities.filter((u) => u.id !== data.id);
       this.facilities = newState;
     });
+  },
+  computed: {
+    ...mapState({
+      roles: (state) => state.user && state.user.roles,
+    }),
   },
 };
 </script>

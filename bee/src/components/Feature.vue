@@ -3,7 +3,7 @@
     <div class="col-md-2">
       <Panel></Panel>
     </div>
-    <div class="col-md-10">
+    <div class="col-md-10" v-if="allow">
       <div class="cc-title">
         <div>مدیریت ویژگی ملک</div>
         <div class="add-new">
@@ -36,6 +36,9 @@
           </tbody>
         </table>
       </div>
+    </div>
+    <div class="col-md-10" v-if="!allow">
+      <div class="err">شما دسترسی کافی برای مشاهده این صفحه را ندارید</div>
     </div>
   </div>
 </template>
@@ -88,15 +91,19 @@ table thead tr th {
 import api from "../services/api";
 import FeatureItem from "./FeatureItem";
 import Panel from "./Panel";
+import { mapState } from "vuex";
 
 export default {
   data() {
     return {
       features: [],
       feature: "",
+      allow: null,
     };
   },
   mounted() {
+    this.allow = this.check();
+    if (!this.allow) return false;
     this.getFeatures();
   },
   components: { FeatureItem, Panel },
@@ -120,6 +127,18 @@ export default {
         })
         .catch((e) => console.log(e));
     },
+    findOne(haystack, arr) {
+      return arr.some(function (v) {
+        return haystack.indexOf(v) >= 0;
+      });
+    },
+    check() {
+      if (!this.findOne(this.roles, ["administrator"])) {
+        // return this.$router.push("/error");
+        return false;
+      }
+      return true;
+    },
   },
   created() {
     Event.$on("update-feature", (data) => {
@@ -132,6 +151,11 @@ export default {
       let newState = this.features.filter((u) => u.id !== data.id);
       this.features = newState;
     });
+  },
+  computed: {
+    ...mapState({
+      roles: (state) => state.user && state.user.roles,
+    }),
   },
 };
 </script>

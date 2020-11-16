@@ -3,7 +3,7 @@
     <div class="col-md-2">
       <Panel></Panel>
     </div>
-    <div class="col-md-10">
+    <div class="col-md-10" v-if="allow">
       <div class="shadow-sm rounded" style="margin: 0 50px">
         <div class="create-from-title">مدیریت محل ها</div>
         <div class="create-form">
@@ -74,12 +74,16 @@
         </div>
       </div>
     </div>
+    <div class="col-md-10" v-if="!allow">
+      <div class="err">شما دسترسی کافی برای مشاهده این صفحه را ندارید</div>
+    </div>
   </div>
 </template>
 
 <script>
 import api from "../services/api";
 import Panel from "./Panel";
+import { mapState } from "vuex";
 
 export default {
   name: "Form",
@@ -90,6 +94,7 @@ export default {
       neighborhoods: [],
       neighborhood: "",
       city_id: null,
+      allow: null,
     };
   },
   props: {},
@@ -140,8 +145,22 @@ export default {
           .catch((e) => console.log(e));
       }
     },
+    findOne(haystack, arr) {
+      return arr.some(function (v) {
+        return haystack.indexOf(v) >= 0;
+      });
+    },
+    check() {
+      if (!this.findOne(this.roles, ["administrator"])) {
+        // return this.$router.push("/error");
+        return false;
+      }
+      return true;
+    },
   },
   mounted() {
+    this.allow = this.check();
+    if (!this.allow) return false;
     api
       .get("api/v1/data/get-provinces")
       .then((response) => {
@@ -149,7 +168,11 @@ export default {
       })
       .catch((error) => console.log(error));
   },
-  computed: {},
+  computed: {
+    ...mapState({
+      roles: (state) => state.user && state.user.roles,
+    }),
+  },
 };
 </script>
 
