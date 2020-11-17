@@ -28,8 +28,8 @@ try {
 
 //Register scripts to use
 function func_load_vuescripts() {
-	wp_register_script('wpvue_vuejs',plugin_dir_url( __FILE__ ).'bee/dist/js/app.js', true);
-	wp_register_script('my_vuecode', plugin_dir_url( __FILE__ ).'bee/dist/js/chunk-vendors.js', true);
+	wp_register_script('wpvue_vuejs',plugin_dir_url( __FILE__ ).'js/app.js', true);
+	wp_register_script('my_vuecode', plugin_dir_url( __FILE__ ).'js/chunk-vendors.js', true);
 }
 
 //Tell WordPress to register the scripts
@@ -39,9 +39,13 @@ add_action('wp_enqueue_scripts', 'func_load_vuescripts');
 function my_enqueue_stuff() {
   if ( is_page( 'amlak' ) ) {
     /** Call landing-page-template-one enqueue */
-    wp_register_style('wp.style',plugin_dir_url( __FILE__ ).'bee/src/bootstrap.min.css', true);
+    wp_register_style('wp.app',plugin_dir_url( __FILE__ ).'css/app.css', true);
+    wp_enqueue_style('wp.app');
+    wp_register_style('wp.app.chunk',plugin_dir_url( __FILE__ ).'css/chunk-vendors.css', true);
+    wp_enqueue_style('wp.app.chunk');
+    wp_register_style('wp.style',plugin_dir_url( __FILE__ ).'css/bootstrap.min.css', true);
     wp_enqueue_style('wp.style');
-    wp_register_style('wp.style.font',plugin_dir_url( __FILE__ ).'bee/src/style.css', true);
+    wp_register_style('wp.style.font',plugin_dir_url( __FILE__ ).'css/style.css', true);
     wp_enqueue_style('wp.style.font');
   } else {
     /** Call regular enqueue */
@@ -889,7 +893,7 @@ add_action( 'rest_api_init', function () {
       }
       $query->whereRaw("(size <= ? AND size >= ?) ", [$to_size  , $from_size ]);
     }
-    
+
     if($from_size_g  || $to_size_g ){
       if(!$to_size_g){
         $to_size_g = 1000;
