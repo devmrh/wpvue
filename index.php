@@ -27,16 +27,23 @@ function func_load_vuescripts() {
 	wp_register_script('my_vuecode', plugin_dir_url( __FILE__ ).'bee/dist/js/chunk-vendors.js', true);
 }
 
-// Register style
-wp_register_style('wp.style','https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/css/bootstrap.min.css', true);
-wp_enqueue_style('wp.style');
-
-wp_register_style('wp.style.font',plugin_dir_url( __FILE__ ).'bee/src/style.css', true);
-wp_enqueue_style('wp.style.font');
-
-
 //Tell WordPress to register the scripts
 add_action('wp_enqueue_scripts', 'func_load_vuescripts');
+
+// Register style
+function my_enqueue_stuff() {
+  if ( is_page( 'amlak' ) ) {
+    /** Call landing-page-template-one enqueue */
+    wp_register_style('wp.style',plugin_dir_url( __FILE__ ).'bee/src/bootstrap.min.css', true);
+    wp_enqueue_style('wp.style');
+    wp_register_style('wp.style.font',plugin_dir_url( __FILE__ ).'bee/src/style.css', true);
+    wp_enqueue_style('wp.style.font');
+  } else {
+    /** Call regular enqueue */
+  }
+}
+add_action( 'wp_enqueue_scripts', 'my_enqueue_stuff' );
+
 
 //Return string for shortcode
 function func_wp_vue(){
@@ -57,7 +64,6 @@ function func_wp_vue(){
     return $str;
 
   }
- // print_r($users);
 
   //Build String
 
@@ -121,10 +127,6 @@ add_action( 'rest_api_init', function () {
   } );
 
   function ea_get_data( $data ) {
-      //$identifier = $data->get_param( 'identifier' );
-      // $users = get_users();
-      // $users = $users;
-      // return $users;
 
       $data = [];
       $province = Province::get()->toArray();
@@ -145,8 +147,6 @@ add_action( 'rest_api_init', function () {
       $data['neighborhoods'] = $neighborhoods;
       return $data;
   }
-
-
 
 
 // save data.
@@ -282,7 +282,6 @@ function ea_get_properties( $data ) {
     $offset = ( $pagenum - 1 ) * $limit;
     $total = Property::get()->count();
 
-    // return $total;
 
     $num_of_pages = ceil( $total / $limit );
 
@@ -330,7 +329,6 @@ add_action( 'rest_api_init', function () {
       return "موفق";
 
 }
-
 
 
 // Get property categories.
@@ -725,11 +723,6 @@ add_action( 'rest_api_init', function () {
       $facilities = [];
 
     }
-    // $list = '('.implode(', ', $facilities).')';
-
-    // return $list;
-   // return $facilities;
-
 
     $query->when($owner, function ($q, $search) {
       return $q->where('owner', 'like', '%'.$search.'%' );
@@ -821,10 +814,6 @@ add_action( 'rest_api_init', function () {
       return $bb;
     }
     return $data;
-
-
-
 }
-
 
 ?>
