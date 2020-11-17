@@ -76,7 +76,7 @@
         <div class="form-row mb-2 mt-2 distinct">
           <div class="form-group col-md-3">
             <label for="facilities">امکانات</label>
-            <div class="d-flex">
+            <div class="d-flex" style="flex-wrap: wrap;">
               <div
                 class="form-check"
                 v-for="(item, index) in facilities"
@@ -104,12 +104,13 @@
           <div class="form-group col">
             <label for="price">قیمت ملک</label>
             <input
-              type="number"
+              type="text"
               name="price"
               class="form-control"
               id="price"
               v-model="form.price"
               placeholder="قیمت"
+              @keyup="handleChange($event, 'price')"
             />
           </div>
           <div class="form-group col">
@@ -132,6 +133,7 @@
               id="rent_price"
               v-model="form.rent_price"
               placeholder="قیمت اجاره"
+              @keyup="handleChange($event, 'rent_price')"
             />
           </div>
           <div class="form-group col">
@@ -310,14 +312,19 @@
         </div>
         <div class="form-group">
           <label for="build_time">تاریخ ساخت بنا</label>
-          <input
+          <!-- <input
             type="text"
             name="build_time"
             v-model="form.build_time"
             class="form-control"
             id="build_time"
             placeholder="تاریخ ساخت بنا"
-          />
+          /> -->
+          <pdatepicker
+            placeholder="تاریخ ساخت"
+            class="fgd"
+            v-model="form.build_time"
+          ></pdatepicker>
         </div>
         <div class="form-group">
           <label for="address">آدرس</label>
@@ -384,6 +391,7 @@
 <script>
 import api from "../services/api";
 //import { mapState } from "vuex";
+
 export default {
   data() {
     return {
@@ -394,6 +402,7 @@ export default {
       cities: [],
       facilities: [],
       neighborhoods: [],
+      directions: [],
       form: {
         id: "",
         title: "",
@@ -427,6 +436,13 @@ export default {
   },
   props: ["editform"],
   methods: {
+    handleChange(e, name) {
+      let res = e.target.value
+        .toString()
+        .replace(/\D/g, "")
+        .replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+      this.$set(this.form, name, res);
+    },
     setDirection(e) {
       let id = e.target.value;
       this.form.direction_id = id;
@@ -492,6 +508,9 @@ export default {
   },
   mounted() {
     this.form = { ...this.editform };
+    this.form.build_time = window
+      .moment(this.editform.build_time)
+      .format("jYYYY/jM/jD");
     this.form.facilities = this.facilities;
     this.form.id = this.editform.id;
 
@@ -552,6 +571,9 @@ export default {
   display: flex;
   align-items: center;
   flex-wrap: wrap;
+}
+.fgd {
+  width: 165px;
 }
 input,
 select {

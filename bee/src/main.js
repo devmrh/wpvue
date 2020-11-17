@@ -5,19 +5,22 @@ import Facility from './components/Facility';
 import Feature from './components/Feature';
 import Neighborhood from "./components/Neighborhood";
 import One from "./components/One";
+import PDatePicker from 'vue2-persian-datepicker'
 import Property from "./components/Property";
 import Search from "./components/Search";
 import SellType from './components/SellType';
 import Vue from "vue";
 import VueRouter from "vue-router";
 import Vuex from "vuex";
-
 Vue.config.productionTip = false;
 Vue.use(Vuex);
 Vue.use(VueRouter);
+//window.moment = moment();
+window.moment = require('moment-jalaali')
+//moment().format('jYYYY/jM/jD')
 
+Vue.component('pdatepicker', PDatePicker)
 window.Event = new Vue();
-
 
 const router = new VueRouter({
   mode: "history",
