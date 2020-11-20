@@ -165,7 +165,30 @@
                   </div>
                 </div>
               </div>
-
+              <div class="form-row">
+                <div class="form-group col">
+                  <label for="owner">مالک</label>
+                  <input
+                    type="text"
+                    name="owner"
+                    v-model="form.owner"
+                    class="form-control"
+                    id="owner"
+                    placeholder="نام مالک"
+                  />
+                </div>
+                <div class="form-group col">
+                  <label for="phone">شماره تماس</label>
+                  <input
+                    type="text"
+                    name="phone"
+                    v-model="form.phone"
+                    class="form-control"
+                    id="phone"
+                    placeholder="شماره تماس مالک"
+                  />
+                </div>
+              </div>
               <!-- part 2 -->
               <div class="form-row distinct">
                 <div class="form-group col-md-6 dist-1">
@@ -293,7 +316,7 @@
                 style="flex-flow: inherit"
               >
                 <div class="col-md-6 col-sm-12 dist-1">
-                  <div class="row">
+                  <div class="row" style="align-items: center;">
                     <div class="col-md-5 col-sm-12">
                       <div class="form-group">
                         <label for="from_price">قیمت ملک به تومان</label>
@@ -328,7 +351,7 @@
                   </div>
                 </div>
                 <div class="col-md-6 col-sm-12 dist-2">
-                  <div class="row">
+                  <div class="row" style="align-items: center;">
                     <div class="col-md-5 col-sm-12">
                       <div class="form-group">
                         <label for="from_rent_price">قیمت اجاره به تومان</label>
@@ -422,7 +445,7 @@
               <!-- start part 5 -->
               <div class="form-row distinct">
                 <div class="form-group col">
-                  <label for="bed_count">تعداد خواب</label>
+                  <label for="bed_count">حداقل تعداد خواب</label>
                   <input
                     type="number"
                     name="bed_count"
@@ -433,18 +456,18 @@
                   />
                 </div>
                 <div class="form-group col">
-                  <label for="bath_count">تعداد حمام</label>
+                  <label for="bath_count">حداقل تعداد مستر(حمام)</label>
                   <input
                     type="number"
                     name="bath_count"
                     v-model="form.bath_count"
                     class="form-control"
                     id="bath_count"
-                    placeholder="تعداد حمام"
+                    placeholder="تعداد مستر"
                   />
                 </div>
                 <div class="form-group col">
-                  <label for="parking_count">تعداد پارکینگ</label>
+                  <label for="parking_count">حداقل تعداد پارکینگ</label>
                   <input
                     type="number"
                     name="parking_count"
@@ -455,32 +478,6 @@
                   />
                 </div>
               </div>
-
-              <div class="form-row">
-                <div class="form-group col">
-                  <label for="owner">مالک</label>
-                  <input
-                    type="text"
-                    name="owner"
-                    v-model="form.owner"
-                    class="form-control"
-                    id="owner"
-                    placeholder="نام مالک"
-                  />
-                </div>
-                <div class="form-group col">
-                  <label for="phone">شماره تماس</label>
-                  <input
-                    type="text"
-                    name="phone"
-                    v-model="form.phone"
-                    class="form-control"
-                    id="phone"
-                    placeholder="شماره تماس مالک"
-                  />
-                </div>
-              </div>
-
               <div class="form-group">
                 <div class="form-check">
                   <input
