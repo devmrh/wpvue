@@ -1,16 +1,12 @@
 <template>
-  <div class="row">
+  <div class="row" :class="{ mobileSnackBar: is_mobile }">
     <div class="col-md-2">
       <Panel></Panel>
     </div>
     <div class="col-md-10" v-if="allow">
-      <div
-        v-if="showCondition == 'form'"
-        class="shadow-sm rounded"
-        style="margin: 0 50px"
-      >
+      <div class="shadow-sm rounded" style="margin: 0 20px">
         <div class="cc-title">مدیریت ملک</div>
-        <div class="cc">
+        <div class="table-responsive cc">
           <table class="table my-4">
             <thead>
               <tr>
@@ -38,16 +34,20 @@
                 </td>
                 <td>
                   <div class="text-center">
-                      {{ item.username }}
+                    {{ item.username }}
                   </div>
                 </td>
                 <td>
-                  <div class="d-flex">
+                  <div class="d-flex; flex-flow: wrap;justify-content: center;">
                     <button
                       class="btn btn-primary mx-2"
                       @click="editProperty(item)"
                     >
-                      ویرایش
+                      <router-link
+                        :to="'/edit-property/' + item.id"
+                        class="text-white"
+                        >ویرایش</router-link
+                      >
                     </button>
                     <button
                       class="btn btn-danger"
@@ -77,9 +77,6 @@
           </div>
         </div>
       </div>
-      <div v-if="showCondition == 'edit-form'">
-        <EditForm @clicked="childEvent" :editform="editFormdata"></EditForm>
-      </div>
     </div>
     <div class="col-md-10" v-if="!allow">
       <div class="err">شما دسترسی کافی برای مدیریت ملک ندارید</div>
@@ -91,14 +88,11 @@
 import api from "../services/api";
 import Pagination from "./Pagination";
 import Panel from "./Panel";
-import EditForm from "./EditForm";
 import { mapState } from "vuex";
 
 export default {
   data() {
     return {
-      showCondition: "form",
-      editFormdata: "",
       properties: {},
       topage: "",
       frompage: "",
@@ -110,11 +104,11 @@ export default {
       allow: null,
     };
   },
-  components: { Pagination, Panel, EditForm },
+  components: { Pagination, Panel },
   methods: {
     editProperty(item) {
-      this.showCondition = "edit-form";
-      this.editFormdata = item;
+      //this.editFormdata = item;
+      this.$store.commit("setProperty", item);
     },
     deleteProperty(id) {
       if (confirm("آیا مطمن هستید؟!")) {
@@ -130,9 +124,6 @@ export default {
             this.err = e;
           });
       }
-    },
-    childEvent(value) {
-      this.showCondition = value;
     },
     getPaginationData(e) {
       console.log(e);
@@ -175,6 +166,10 @@ export default {
       user: (state) => state.user,
       roles: (state) => state.user && state.user.roles,
     }),
+    is_mobile() {
+      const isMobile = window.matchMedia("only screen and (max-width: 760px)");
+      return isMobile.matches ? true : false;
+    },
   },
 };
 </script>
@@ -215,6 +210,9 @@ export default {
   background: #f7f7f7;
   padding: 5px;
 }
+.mobileSnackBar {
+  flex-flow: column-reverse !important;
+}
 input,
 select {
   font-size: 15px !important;
@@ -224,5 +222,9 @@ table tbody tr td > div {
 }
 table thead tr th {
   font-size: 15px;
+}
+button > a {
+  text-decoration: none;
+  font-size: 12px;
 }
 </style>

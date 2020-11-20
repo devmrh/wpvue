@@ -1,5 +1,7 @@
 import App from "./App.vue";
 import Category from "./components/Category";
+import Document from "./components/Document";
+import EditForm from "./components/EditForm";
 import Error from './components/Error';
 import Facility from './components/Facility';
 import Feature from './components/Feature';
@@ -29,12 +31,14 @@ const router = new VueRouter({
     { path: "/amlak", component: One },
     { path: "/search", component: Search },
     { path: "/manage", component: Property },
+    { path: "/edit-property/:id", component: EditForm },
     { path: '/error', component: Error },
     { path: '/category', component:  Category},
     { path: '/selltype', component:  SellType},
     { path: '/feature', component:  Feature},
     { path: '/facilities', component:  Facility},
-    { path: '/neighborhoods', component: Neighborhood}
+    { path: '/neighborhoods', component: Neighborhood},
+    { path: '/documents', component: Document}
 
   ],
 });
@@ -43,7 +47,8 @@ const store = new Vuex.Store({
   state: {
     user: null,
     auth: null,
-    properties: null
+    properties: null,
+    property: null
   },
   mutations: {
     setUser(state, user) {
@@ -51,6 +56,9 @@ const store = new Vuex.Store({
     },
     setProperties(state, data){
       state.properties = data;
+    },
+    setProperty(state, data){
+      state.property = data;
     }
   },
   actions: {
@@ -72,6 +80,9 @@ const store = new Vuex.Store({
     },
     properties: (state) => {
       return state.properties;
+    },
+    property: (state) => {
+      return state.property;
     }
   },
 });

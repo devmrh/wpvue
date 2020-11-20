@@ -1,5 +1,5 @@
 <template>
-  <div class="row">
+  <div class="row" :class="{ mobileSnackBar: is_mobile }">
     <div class="col-md-2">
       <Panel></Panel>
     </div>
@@ -172,6 +172,10 @@ export default {
     ...mapState({
       roles: (state) => state.user && state.user.roles,
     }),
+    is_mobile() {
+      const isMobile = window.matchMedia("only screen and (max-width: 760px)");
+      return isMobile.matches ? true : false;
+    },
   },
 };
 </script>
@@ -208,6 +212,9 @@ export default {
   display: flex;
   align-items: center;
   flex-wrap: wrap;
+}
+.mobileSnackBar {
+  flex-flow: column-reverse !important;
 }
 input,
 select {

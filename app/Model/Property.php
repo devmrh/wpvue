@@ -16,6 +16,7 @@ class Property extends Model
     'property_category_id',
     'sell_type_id',
     'feature_id',
+    'document_id',
     'price',
     'price_label',
     'rent_price',
@@ -51,6 +52,10 @@ class Property extends Model
   public function sellType()
   {
     return $this->belongsTo(SellType::class);
+  }
+  public function document()
+  {
+    return $this->belongsTo(Document::class);
   }
 
   public function propertyCategory()

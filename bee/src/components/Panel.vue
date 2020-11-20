@@ -41,6 +41,11 @@
             <router-link to="/neighborhoods" class="text-white">مدیریت محل </router-link>
         </button>
       </div>
+      <div>
+        <button class="btn btn-primary btn-lg btn-block mt-3 cus-btn">
+            <router-link to="/documents" class="text-white">مدیریت نوع سند </router-link>
+        </button>
+      </div>
     </div>
   </div>
 </template>

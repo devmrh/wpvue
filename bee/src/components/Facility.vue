@@ -1,5 +1,5 @@
 <template>
-  <div class="row main-row">
+  <div class="row main-row" :class="{ mobileSnackBar: is_mobile }">
     <div class="col-md-2">
       <Panel></Panel>
     </div>
@@ -12,7 +12,7 @@
             <input
               style="width: 300px"
               type="type"
-              placeholder="عنوان امکانات جدید را وارد و اینتر بزنید"
+              placeholder="عنوان جدید را وارد و اینتر بزنید"
               class="form-control"
               v-model="facility"
               v-on:keyup.enter="addNew"
@@ -75,6 +75,9 @@
 .distinct {
   background: #f7f7f7;
   padding: 5px;
+}
+.mobileSnackBar {
+  flex-flow: column-reverse !important;
 }
 input,
 select {
@@ -156,6 +159,10 @@ export default {
     ...mapState({
       roles: (state) => state.user && state.user.roles,
     }),
+    is_mobile() {
+      const isMobile = window.matchMedia("only screen and (max-width: 760px)");
+      return isMobile.matches ? true : false;
+    },
   },
 };
 </script>

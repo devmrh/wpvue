@@ -1,5 +1,5 @@
 <template>
-  <div class="shadow-sm rounded" style="margin: 0 50px">
+  <div class="shadow-sm rounded" style="margin: 0 25px">
     <button
       type="button"
       @click="$emit('clicked', 'all')"
@@ -11,7 +11,7 @@
     <div class="create-form">
       <form>
         <div class="form-row">
-          <div class="form-group col-md-3">
+          <div class="form-group col-md-3 col-sm-12">
             <label for="title">عنوان</label>
             <input
               disabled
@@ -23,7 +23,7 @@
               placeholder="عنوان ملک"
             />
           </div>
-          <div class="form-group col-md-3">
+          <div class="form-group col-md-3 col-sm-12">
             <label for="category">دسته</label>
             <select
               disabled
@@ -42,7 +42,7 @@
               <option value="">مشخص نشده</option>
             </select>
           </div>
-          <div class="form-group col-md-3">
+          <div class="form-group col-md-3 col-sm-12">
             <label for="sell_type">نوع معامله</label>
             <select
               id="sell_type"
@@ -61,7 +61,7 @@
               <option value="">مشخص نشده</option>
             </select>
           </div>
-          <div class="form-group col-md-3">
+          <div class="form-group col-md-3 col-sm-12">
             <label for="feature">ویژگی ملک</label>
             <select
               id="feature"
@@ -84,7 +84,7 @@
         <div class="form-row mb-2 mt-2 distinct">
           <div class="form-group col-md-3">
             <label for="facilities">امکانات</label>
-            <div class="d-flex">
+            <div class="">
               <div
                 class="form-check"
                 v-for="(item, index) in facilities"
@@ -109,7 +109,7 @@
           </div>
         </div>
         <div class="form-row mt-3 mb-3">
-          <div class="form-group col">
+          <div class="form-group col-md-6 col-sm-12">
             <label for="price">قیمت ملک</label>
             <input
               disabled
@@ -121,7 +121,7 @@
               placeholder="قیمت"
             />
           </div>
-          <div class="form-group col">
+          <div class="form-group col-md-6 col-sm-12">
             <label for="price_label">پسوند قیمت</label>
             <input
               disabled
@@ -133,7 +133,10 @@
               placeholder="مانند: میلیون تومان"
             />
           </div>
-          <div class="form-group col">
+
+        </div>
+        <div class="form-row">
+                    <div class="form-group col-md-6 col-sm-12">
             <label for="rent_price">قیمت اجاره</label>
             <input
               disabled
@@ -145,7 +148,7 @@
               placeholder="قیمت اجاره"
             />
           </div>
-          <div class="form-group col">
+          <div class="form-group col-md-6 col-sm-12">
             <label for="rent_label">پسوند قیمت اجاره</label>
             <input
               disabled
@@ -254,7 +257,7 @@
         </div>
 
         <div class="form-row">
-          <div class="form-group col">
+          <div class="form-group col-md-6 col-sm-12">
             <label for="owner">مالک</label>
             <input
               disabled
@@ -266,7 +269,7 @@
               placeholder="نام مالک"
             />
           </div>
-          <div class="form-group col">
+          <div class="form-group col-md-6 col-sm-12">
             <label for="phone">شماره تماس مالک</label>
             <input
               disabled

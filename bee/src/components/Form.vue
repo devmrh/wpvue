@@ -1,5 +1,5 @@
 <template>
-  <div class="shadow-sm rounded" style="margin: 0 50px">
+  <div class="shadow-sm rounded" style="margin: 0 25px">
     <div class="create-from-title">ثبت ملک جدید</div>
     <div class="create-form">
       <form @submit.prevent="handleSubmit">
@@ -7,6 +7,7 @@
           <div class="form-group col-md-3">
             <label for="title">عنوان</label>
             <input
+              ref="title"
               type="title"
               class="form-control"
               id="title"
@@ -70,12 +71,92 @@
             </select>
           </div>
         </div>
+        <div class="form-row">
+          <div class="form-group col-md-6 col-sm-12">
+            <label for="owner">مالک</label>
+            <input
+              type="text"
+              name="owner"
+              v-model="form.owner"
+              class="form-control"
+              id="owner"
+              placeholder="نام مالک"
+            />
+          </div>
+          <div class="form-group col-md-6 col-sm-12">
+            <label for="phone">شماره تماس مالک</label>
+            <input
+              type="text"
+              name="phone"
+              v-model="form.phone"
+              class="form-control"
+              id="phone"
+              placeholder="شماره تماس"
+            />
+          </div>
+        </div>
+        <div class="form-row distinct">
+          <div class="col-md-6">
+            <div class="form-group">
+              <label for="address">آدرس</label>
+              <input
+                type="text"
+                name="address"
+                v-model="form.address"
+                class="form-control"
+                id="address"
+                placeholder="آدرس ملک"
+              />
+            </div>
+          </div>
+
+          <div class="col-md-6">
+          <div class="form-group">
+            <label for="doc">نوع سند</label>
+            <select
+              id="doc"
+              @change="changeDocument($event)"
+              name="document_id"
+              class="form-control"
+            >
+              <option
+                v-for="(item, index) in documentTypes"
+                :key="index"
+                :value="item.id"
+              >
+                {{ item.name }}
+              </option>
+              <option value="">مشخص نشده</option>
+            </select>
+          </div>
+          </div>
+        </div>
+        <div class="form-group">
+          <label for="description">توضیحات</label>
+          <textarea
+            class="form-control"
+            name="description"
+            v-model="form.description"
+            id="description"
+            rows="3"
+          ></textarea>
+        </div>
         <div class="form-row mb-2 mt-2 distinct">
-          <div class="form-group col-md-3">
-            <label for="facilities">امکانات</label>
-            <div class="d-flex" style="flex-wrap: wrap;">
+          <div
+            class="form-group row"
+            style="
+              flex-flow: wrap;
+              margin-right: 15px;
+              padding: 10px 5px;
+              align-items: center;
+            "
+          >
+            <label for="facilities" style="margin: 0; margin-left: 20px"
+              >امکانات</label
+            >
+            <div class="d-flex" style="flex-wrap: wrap">
               <div
-                class="form-check"
+                class="form-check p-1"
                 v-for="(item, index) in facilities"
                 :key="index"
               >
@@ -98,7 +179,7 @@
           </div>
         </div>
         <div class="form-row mt-3 mb-3">
-          <div class="form-group col">
+          <div class="form-group col-md-3 col-sm-12">
             <label for="price">قیمت ملک</label>
             <input
               type="text"
@@ -110,7 +191,7 @@
               @keyup="handleChange($event, 'price')"
             />
           </div>
-          <div class="form-group col">
+          <div class="form-group col-md-3 col-sm-12">
             <label for="price_label">پسوند قیمت</label>
             <input
               type="text"
@@ -121,7 +202,7 @@
               placeholder="مانند: میلیون تومان"
             />
           </div>
-          <div class="form-group col">
+          <div class="form-group col-md-3 col-sm-12">
             <label for="rent_price">قیمت اجاره</label>
             <input
               type="text"
@@ -133,7 +214,7 @@
               @keyup="handleChange($event, 'rent_price')"
             />
           </div>
-          <div class="form-group col">
+          <div class="form-group col-md-3 col-sm-12">
             <label for="rent_label">پسوند قیمت اجاره</label>
             <input
               type="text"
@@ -163,7 +244,7 @@
               <option value="">...</option>
             </select>
           </div>
-          <div class="form-group col">
+          <div class="form-group col-md-6">
             <label for="city_id">شهر</label>
             <select
               id="city_id"
@@ -180,7 +261,7 @@
               <option value="">...</option>
             </select>
           </div>
-          <div class="form-group col">
+          <div class="form-group col-md-6">
             <label for="neighborhooh_id">محله</label>
             <select
               id="neighborhooh_id"
@@ -197,7 +278,7 @@
               <option value="">...</option>
             </select>
           </div>
-          <div class="form-group col direction">
+          <div class="form-group col-sm-12 col-md-6 direction">
             <div
               v-for="(item, index) in directions"
               :key="index"
@@ -244,7 +325,7 @@
           </div>
         </div>
         <div class="form-row distinct">
-          <div class="form-group col">
+          <div class="form-group col-md-4 col-sm-12">
             <label for="bed_count">تعداد خواب</label>
             <input
               type="number"
@@ -255,7 +336,7 @@
               placeholder="تعداد اتاق خواب"
             />
           </div>
-          <div class="form-group col">
+          <div class="form-group col-md-4 col-sm-12">
             <label for="bath_count">تعداد حمام</label>
             <input
               type="number"
@@ -266,7 +347,7 @@
               placeholder="تعداد حمام"
             />
           </div>
-          <div class="form-group col">
+          <div class="form-group col-md-4 col-sm-12">
             <label for="parking_count">تعداد پارکینگ</label>
             <input
               type="number"
@@ -280,66 +361,45 @@
         </div>
 
         <div class="form-row">
-          <div class="form-group col">
-            <label for="owner">مالک</label>
+          <div class="col-md-4 col-sm-12">
+            <div class="form-group">
+              <label for="build_time">تاریخ ساخت بنا</label>
+              <input
+                type="text"
+                name="build_time"
+                v-model="form.build_time"
+                class="form-control"
+                id="build_time"
+                placeholder="مانند 1390"
+              />
+            </div>
+          </div>
+          <div class="col-md-4 col-sm-12">
+            <div class="form-group">
+              <label for="property_id">کد ملک</label>
+              <input
+                type="text"
+                name="property_id"
+                v-model="property_id"
+                class="form-control"
+                id="property_id"
+                disabled
+                placeholder="مانند 1390"
+              />
+            </div>
+          </div>
+          <div class="col-md-4 col-sm-12">
+            <label for="today">تاریخ ثبت در پایگاه</label>
             <input
               type="text"
-              name="owner"
-              v-model="form.owner"
+              v-model="today"
               class="form-control"
-              id="owner"
-              placeholder="نام مالک"
-            />
-          </div>
-          <div class="form-group col">
-            <label for="phone">شماره تماس مالک</label>
-            <input
-              type="text"
-              name="phone"
-              v-model="form.phone"
-              class="form-control"
-              id="phone"
-              placeholder="شماره تماس"
+              id="today"
+              disabled
             />
           </div>
         </div>
-        <div class="form-group">
-          <label for="build_time">تاریخ ساخت بنا</label>
-          <!-- <input
-            type="text"
-            name="build_time"
-            v-model="form.build_time"
-            class="form-control"
-            id="build_time"
-            placeholder="تاریخ ساخت بنا"
-          /> -->
-          <pdatepicker
-            placeholder="تاریخ ساخت"
-            class="fgd"
-            v-model="form.build_time"
-          ></pdatepicker>
-        </div>
-        <div class="form-group">
-          <label for="address">آدرس</label>
-          <input
-            type="text"
-            name="address"
-            v-model="form.address"
-            class="form-control"
-            id="address"
-            placeholder="آدرس ملک"
-          />
-        </div>
-        <div class="form-group">
-          <label for="description">توضیحات</label>
-          <textarea
-            class="form-control"
-            name="description"
-            v-model="form.description"
-            id="description"
-            rows="3"
-          ></textarea>
-        </div>
+
         <div class="form-group">
           <div class="form-check">
             <input
@@ -380,11 +440,13 @@ export default {
       facilities: [],
       directions: [],
       neighborhoods: [],
+      documentTypes: [],
       form: {
         title: null,
         property_category_id: null,
         sell_type_id: null,
         feature_id: null,
+        document_id: null,
         price: null,
         price_label: null,
         rent_price: null,
@@ -399,7 +461,7 @@ export default {
         parking_count: null,
         owner: null,
         phone: null,
-        build_time: window.moment().format("jYYYY/jM/jD"),
+        build_time: null,
         address: null,
         description: null,
         special: null,
@@ -409,6 +471,8 @@ export default {
       },
       info: "",
       err: "",
+      today: window.moment().format("jYYYY/jM/jD"),
+      property_id: "{DATABAM-ID}",
     };
   },
   props: {},
@@ -440,6 +504,9 @@ export default {
     },
     changeFeature(e) {
       this.form.feature_id = e.target.value;
+    },
+    changeDocument(e) {
+      this.form.document_id = e.target.value;
     },
     changeCity(e) {
       this.form.city_id = e.target.value;
@@ -479,6 +546,35 @@ export default {
         })
         .then((res) => {
           this.info = res.data;
+          this.$refs.title.focus();
+          this.form = {
+            title: null,
+            property_category_id: null,
+            sell_type_id: null,
+            feature_id: null,
+            document_id: null,
+            price: null,
+            price_label: null,
+            rent_price: null,
+            rent_label: null,
+            province_id: null,
+            neighborhood_id: null,
+            city_id: null,
+            size: null,
+            size_unit: null,
+            bed_count: null,
+            bath_count: null,
+            parking_count: null,
+            owner: null,
+            phone: null,
+            build_time: null,
+            address: null,
+            description: null,
+            special: null,
+            facilities: [],
+            user_id: null,
+            direction_id: null,
+          };
         })
         .catch((e) => {
           this.err = e.response.data.data;
@@ -495,9 +591,9 @@ export default {
         this.features = response.data.features;
         this.facilities = response.data.facilities;
         this.directions = response.data.directions;
+        this.documentTypes = response.data.documentTypes;
       })
       .catch((error) => console.log(error));
-    this.form.build_time = window.moment().format("jYYYY/jM/jD");
 
     // console.log(this.user);
     //this.user_id = this.user.user.ID;
@@ -536,6 +632,7 @@ export default {
 .distinct {
   background: #f7f7f7;
   padding: 5px;
+  border: 1px solid #eee;
 }
 .direction {
   justify-content: center;

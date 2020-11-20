@@ -47,4 +47,11 @@ DB::table('directions')->insert([
   ['name' => 'شرق', 'slug' => ''],
   ['name' => 'غرب', 'slug' => ''],
 ]);
+
+DB::table('documents')->insert([
+  ['name' => 'شخصی', 'slug' => ''],
+  ['name' => 'بنیاد', 'slug' => ''],
+  ['name' => 'دفترچه ای', 'slug' => ''],
+]);
+
 echo "DONE";

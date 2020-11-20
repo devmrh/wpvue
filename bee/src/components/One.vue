@@ -1,5 +1,5 @@
 <template>
-  <div class="row main-row">
+  <div class="row main-row" :class="{ mobileSnackBar: is_mobile }">
     <div class="col-md-2">
       <Panel></Panel>
     </div>
@@ -22,6 +22,9 @@
   color: #7b1b1b;
   font-size: 15px;
   font-weight: bold;
+}
+.mobileSnackBar {
+  flex-flow: column-reverse !important;
 }
 </style>
 <script>
@@ -46,11 +49,10 @@ export default {
         return haystack.indexOf(v) >= 0;
       });
     },
-
   },
   mounted() {
-   // this.allow = this.check();
-   // if (!this.allow) return false;
+    // this.allow = this.check();
+    // if (!this.allow) return false;
   },
   computed: {
     ...mapState({
@@ -58,8 +60,7 @@ export default {
       roles: (state) => state.user && state.user.roles,
     }),
     check() {
-      if(this.roles){
-
+      if (this.roles) {
         if (!this.findOne(this.roles, ["ml-author", "administrator"])) {
           // return this.$router.push("/error");
           return false;
@@ -67,6 +68,10 @@ export default {
         return true;
       }
       return false;
+    },
+    is_mobile() {
+      const isMobile = window.matchMedia("only screen and (max-width: 760px)");
+      return isMobile.matches ? true : false;
     },
   },
 };

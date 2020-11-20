@@ -1,52 +1,71 @@
 <template>
   <div class="row main-row">
     <div class="col-md-12">
-    <div class="cc-title">نتیجه جستجو</div>
+      <div class="cc-title">نتیجه جستجو</div>
 
-    <div v-if="status == 'all'" class="cc">
-      <button
-        type="button"
-        @click="$emit('clicked', 'search')"
-        class="btn btn-warning btn-lg btn-block mt-3 cus-btn"
-      >
-        بستن
-      </button>
-      <table class="table my-4">
-        <thead>
-          <tr>
-            <th>ID</th>
-            <th>عنوان</th>
-            <th>مالک</th>
-            <th>آدرس</th>
-            <th>بیشتر</th>
-          </tr>
-        </thead>
-        <tbody v-if="sdata">
-          <tr v-for="(item, index) in sdata" :key="index">
-            <td>
-              <div class="text-center">{{ item.id }}</div>
-            </td>
-            <td>
-              <div class="text-center" ><a class="btn btn-link" @click="setSingleData(item)">{{ item.title }}</a></div>
-            </td>
-            <td>
-              <div class="text-center">{{ item.owner }}</div>
-            </td>
-            <td>
-              <div class="text-center">{{ item.address }}</div>
-            </td>
-            <td>
-              <div class="d-flex">
-                <a class="btn btn-link" @click="setSingleData(item)">مشاهده</a>
-              </div>
-            </td>
-          </tr>
-        </tbody>
-      </table>
-    </div>
-    <div v-if="status == 'single'">
-      <ShowSingle v-if="singledata" :singleform="singledata" @clicked="childEvent"> </ShowSingle>
-    </div>
+      <div v-if="status == 'all'" class="cc">
+        <button
+          type="button"
+          @click="$emit('clicked', 'search')"
+          class="btn btn-warning btn-lg btn-block mt-3 cus-btn"
+        >
+          بستن
+        </button>
+        <table class="table my-4">
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>عنوان</th>
+              <th>مالک</th>
+              <th>آدرس</th>
+              <th>بیشتر</th>
+            </tr>
+          </thead>
+          <tbody v-if="sdata">
+            <tr v-for="(item, index) in sdata" :key="index">
+              <td>
+                <div class="text-center">{{ item.id }}</div>
+              </td>
+              <td>
+                <div class="text-center">
+                  <a class="font-weight-bold" @click="setSingleData(item)">{{
+                    item.title
+                  }}</a>
+                </div>
+              </td>
+              <td>
+                <div class="text-center">{{ item.owner }}</div>
+              </td>
+              <td>
+                <div class="text-center">{{ item.address }}</div>
+              </td>
+              <td>
+                <div class="d-flex">
+                  <a class="font-weight-bold" @click="setSingleData(item)"
+                    >مشاهده</a
+                  >
+
+                    <router-link
+                      :to="'/edit-property/' + item.id"
+                      class="text-warning mr-3"
+                      >ویرایش</router-link
+                    >
+
+
+                </div>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <div v-if="status == 'single'">
+        <ShowSingle
+          v-if="singledata"
+          :singleform="singledata"
+          @clicked="childEvent"
+        >
+        </ShowSingle>
+      </div>
     </div>
   </div>
 </template>
@@ -90,29 +109,26 @@ table thead tr th {
 }
 </style>
 <script>
-import ShowSingle from './ShowSingle';
+import ShowSingle from "./ShowSingle";
 
 export default {
   data() {
     return {
       singledata: null,
-      status: 'all'
-    }
+      status: "all",
+    };
   },
   props: ["sdata"],
-  components: {ShowSingle},
-  mounted() {
-
-  },
+  components: { ShowSingle },
+  mounted() {},
   methods: {
-    setSingleData(item){
+    setSingleData(item) {
       this.singledata = item;
-      this.status = "single"
+      this.status = "single";
     },
     childEvent(value) {
       this.status = value;
     },
   },
-
 };
 </script>

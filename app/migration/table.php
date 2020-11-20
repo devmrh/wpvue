@@ -91,6 +91,14 @@ Capsule::schema()->create('neighborhoods', function($table){
 
 });
 
+Capsule::schema()->create('documents', function($table){
+  $table->bigIncrements('id');
+  $table->string('name');
+  $table->string('slug')->nullable();
+  $table->timestamps();
+
+});
+
 
 Capsule::schema()->create('properties', function($table){
   $table->bigIncrements('id');
@@ -101,6 +109,7 @@ Capsule::schema()->create('properties', function($table){
   $table->unsignedBigInteger('province_id')->nullable();
   $table->unsignedBigInteger('direction_id')->nullable();
   $table->unsignedBigInteger('neighborhood_id')->nullable();
+  $table->unsignedBigInteger('document_id')->nullable();
 
 
   $table->string('title');
@@ -121,7 +130,7 @@ Capsule::schema()->create('properties', function($table){
   $table->string('bath_count')->nullable();
   $table->string('parking_count')->nullable();
   $table->string('bed_count')->nullable();
-  $table->date('build_time')->nullable();
+  $table->string('build_time')->nullable();
 
   $table->boolean('special')->default(0);
   $table->timestamps();
@@ -133,6 +142,7 @@ Capsule::schema()->create('properties', function($table){
   $table->foreign('province_id')->references('id')->on('provinces')->onDelete('no action')->onUpdate('cascade');
   $table->foreign('direction_id')->references('id')->on('directions')->onDelete('no action')->onUpdate('cascade');
   $table->foreign('neighborhood_id')->references('id')->on('neighborhoods')->onDelete('no action')->onUpdate('cascade');
+  $table->foreign('document_id')->references('id')->on('documents')->onDelete('no action')->onUpdate('cascade');
 
 });
 

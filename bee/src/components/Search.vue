@@ -1,5 +1,5 @@
 <template>
-  <div class="row">
+  <div class="row" :class="{ mobileSnackBar: is_mobile }">
     <div class="col-md-2">
       <Panel></Panel>
     </div>
@@ -9,7 +9,7 @@
         <form @submit.prevent="handleSubmit" style="width: 100%">
           <div class="row">
             <div class="col-md-4">
-              <div class="form-row">
+              <div class="form-row distinct">
                 <div class="form-group col-md-6">
                   <label for="province_id">استان</label>
                   <select
@@ -44,8 +44,9 @@
                     <option>...</option>
                   </select>
                 </div>
-
-                <div class="form-group col">
+              </div>
+              <div class="form-row distinct">
+                <div class="form-group col-md-12 distinct">
                   <label for="neighborhooh_id">محله</label>
                   <div v-if="neighborhoods.length < 1">شهر مشخص نشده</div>
                   <div
@@ -65,7 +66,7 @@
                     </label>
                   </div>
                 </div>
-                <div class="form-group col direction">
+                <div class="form-group col-md-12 direction distinct">
                   <div
                     v-for="(item, index) in directions"
                     :key="index"
@@ -97,6 +98,17 @@
                   rows="3"
                 ></textarea>
               </div>
+              <div class="form-group">
+                <label for="form_id">جستجو در شناسه</label>
+                <input
+                  type="text"
+                  name="form_id"
+                  v-model="form.form_id"
+                  class="form-control"
+                  id="form_id"
+                  placeholder="DATABAM-ID"
+                />
+              </div>
             </div>
             <div class="col-md-8">
               <div class="form-row align-items-center distinct">
@@ -104,34 +116,24 @@
                   <div class="row" style="justify-content: center">
                     <div class="form-group fgd">
                       <label for="from_build_time">تاریخ ثبت</label>
-                      <!-- <input
+                      <input
                         type="text"
                         v-model="form.from_register_time"
                         class="form-control"
                         id="from_build_time"
-                        placeholder="تاریخ ثبت"
-                      /> -->
-                      <pdatepicker
-                        placeholder="تاریخ ثبت"
-                        class="fgd"
-                        v-model="form.from_register_time"
-                      ></pdatepicker>
+                        :placeholder="today"
+                      />
                     </div>
                     <div class="mx-4" style="align-self: center">الی</div>
                     <div class="form-group fgd">
                       <label for="to_build_time">تاریخ ثبت</label>
-                      <!-- <input
+                      <input
                         type="text"
                         v-model="form.to_register_time"
                         class="form-control"
                         id="to_build_time"
-                        placeholder="تاریخ ثبت"
-                      /> -->
-                      <pdatepicker
-                        placeholder="تاریخ ثبت"
-                        class="fgd"
-                        v-model="form.to_register_time"
-                      ></pdatepicker>
+                        :placeholder="today"
+                      />
                     </div>
                   </div>
                 </div>
@@ -139,36 +141,26 @@
                   <div class="row" style="justify-content: center">
                     <div class="form-group fgd">
                       <label for="from_build_time">تاریخ ساخت بنا</label>
-                      <!-- <input
+                      <input
                         type="text"
                         name="from_build_time"
                         v-model="form.from_build_time"
                         class="form-control"
                         id="from_build_time"
-                        placeholder="تاریخ ساخت بنا"
-                      /> -->
-                      <pdatepicker
-                        placeholder="تاریخ ساخت بنا"
-                        class="fgd"
-                        v-model="form.from_build_time"
-                      ></pdatepicker>
+                        placeholder="مانند 1390"
+                      />
                     </div>
                     <div class="mx-4" style="align-self: center">الی</div>
                     <div class="form-group fgd">
                       <label for="to_build_time">تاریخ ساخت بنا</label>
-                      <!-- <input
+                      <input
                         type="text"
                         name="to_build_time"
                         v-model="form.to_build_time"
                         class="form-control"
                         id="to_build_time"
-                        placeholder="تاریخ ساخت بنا"
-                      /> -->
-                      <pdatepicker
-                        placeholder="تاریخ ساخت بنا"
-                        class="fgd"
-                        v-model="form.to_build_time"
-                      ></pdatepicker>
+                        placeholder="مانند 1399"
+                      />
                     </div>
                   </div>
                 </div>
@@ -176,7 +168,7 @@
 
               <!-- part 2 -->
               <div class="form-row distinct">
-                <div class="form-group col-md-3 dist-1">
+                <div class="form-group col-md-6 dist-1">
                   <label for="category">دسته</label>
                   <select
                     id="category"
@@ -194,7 +186,7 @@
                     <option value="">مشخص نشده</option>
                   </select>
                 </div>
-                <div class="form-group col-md-3 dist-1">
+                <div class="form-group col-md-6 dist-1">
                   <label for="feature">ویژگی ملک</label>
                   <select
                     id="feature"
@@ -212,9 +204,11 @@
                     <option value="">مشخص نشده</option>
                   </select>
                 </div>
-                <div class="form-group col-md-3 dist-1">
+              </div>
+              <div class="form-row">
+                <div class="form-group col-md-6 dist-1">
                   <label for="sell_type">نوع معامله</label>
-                  <div class="d-flex" style="flex-wrap: wrap;">
+                  <div class="d-flex" style="flex-wrap: wrap">
                     <div
                       class="form-check"
                       v-for="(item, index) in sellTypes"
@@ -238,9 +232,9 @@
                   </div>
                 </div>
 
-                <div class="form-group col-md-3 dist-1">
+                <div class="form-group col-md-6 dist-1">
                   <label for="facilities">امکانات</label>
-                  <div class="d-flex" style="flex-wrap: wrap;">
+                  <div class="d-flex" style="flex-wrap: wrap">
                     <div
                       class="form-check"
                       v-for="(item, index) in facilities"
@@ -264,6 +258,33 @@
                   </div>
                 </div>
               </div>
+              <div class="form-row">
+                <div class="form-group col-md-12 dist-1">
+                  <label for="documenttype">نوع سند</label>
+                  <div class="d-flex" style="flex-wrap: wrap">
+                    <div
+                      class="form-check"
+                      v-for="(item, index) in documentTypes"
+                      :key="index"
+                    >
+                      <input
+                        class="form-check-input"
+                        @change="checkDocumentType($event)"
+                        type="checkbox"
+                        :id="'documenttype' + index"
+                        :value="item.id"
+                      />
+                      <label
+                        class="form-check-label"
+                        name="documenttype"
+                        :for="'documenttype' + index"
+                      >
+                        {{ item.name }}
+                      </label>
+                    </div>
+                  </div>
+                </div>
+              </div>
               <!-- End part 2 -->
 
               <!-- Start part 3 -->
@@ -271,58 +292,74 @@
                 class="form-row mt-3 mb-3 align-items-center distinct"
                 style="flex-flow: inherit"
               >
-                <div class="dist-1 d-flex">
-                  <div class="form-group col">
-                    <label for="from_price">قیمت ملک به تومان</label>
-                    <input
-                      type="text"
-                      name="from_price"
-                      class="form-control"
-                      id="from_price"
-                      v-model="form.from_price"
-                      placeholder="قیمت"
-                      @keyup="handleChange($event, 'from_price')"
-                    />
-                  </div>
-                  <div class="mx-2">تا</div>
-                  <div class="form-group col">
-                    <label for="price">قیمت ملک به تومان</label>
-                    <input
-                      type="text"
-                      name="to_price"
-                      class="form-control"
-                      id="to_price"
-                      v-model="form.to_price"
-                      placeholder="قیمت"
-                      @keyup="handleChange($event, 'to_price')"
-                    />
+                <div class="col-md-6 col-sm-12 dist-1">
+                  <div class="row">
+                    <div class="col-md-5 col-sm-12">
+                      <div class="form-group">
+                        <label for="from_price">قیمت ملک به تومان</label>
+                        <input
+                          type="text"
+                          name="from_price"
+                          class="form-control"
+                          id="from_price"
+                          v-model="form.from_price"
+                          placeholder="قیمت"
+                          @keyup="handleChange($event, 'from_price')"
+                        />
+                      </div>
+                    </div>
+                    <div class="col-md-2 col-sm-12">
+                      <div class="mx-2">تا</div>
+                    </div>
+                    <div class="col-md-5 col-sm-12">
+                      <div class="form-group">
+                        <label for="price">قیمت ملک به تومان</label>
+                        <input
+                          type="text"
+                          name="to_price"
+                          class="form-control"
+                          id="to_price"
+                          v-model="form.to_price"
+                          placeholder="قیمت"
+                          @keyup="handleChange($event, 'to_price')"
+                        />
+                      </div>
+                    </div>
                   </div>
                 </div>
-                <div class="dist-2 d-flex">
-                  <div class="form-group col">
-                    <label for="from_rent_price">قیمت اجاره به تومان</label>
-                    <input
-                      type="text"
-                      name="from_rent_price"
-                      class="form-control"
-                      id="from_rent_price"
-                      v-model="form.from_rent_price"
-                      placeholder="قیمت اجاره"
-                      @keyup="handleChange($event, 'from_rent_price')"
-                    />
-                  </div>
-                  <div class="mx-2">تا</div>
-                  <div class="form-group col">
-                    <label for="to_rent_price">قیمت اجاره به تومان</label>
-                    <input
-                      type="text"
-                      name="to_rent_price"
-                      class="form-control"
-                      id="to_rent_price"
-                      v-model="form.to_rent_price"
-                      placeholder="قیمت اجاره"
-                      @keyup="handleChange($event, 'to_rent_price')"
-                    />
+                <div class="col-md-6 col-sm-12 dist-2">
+                  <div class="row">
+                    <div class="col-md-5 col-sm-12">
+                      <div class="form-group">
+                        <label for="from_rent_price">قیمت اجاره به تومان</label>
+                        <input
+                          type="text"
+                          name="from_rent_price"
+                          class="form-control"
+                          id="from_rent_price"
+                          v-model="form.from_rent_price"
+                          placeholder="قیمت اجاره"
+                          @keyup="handleChange($event, 'from_rent_price')"
+                        />
+                      </div>
+                    </div>
+                    <div class="col-md-2 col-sm-12">
+                      <div class="mx-2">تا</div>
+                    </div>
+                    <div class="col-md-5 col-sm-12">
+                      <div class="form-group">
+                        <label for="to_rent_price">قیمت اجاره به تومان</label>
+                        <input
+                          type="text"
+                          name="to_rent_price"
+                          class="form-control"
+                          id="to_rent_price"
+                          v-model="form.to_rent_price"
+                          placeholder="قیمت اجاره"
+                          @keyup="handleChange($event, 'to_rent_price')"
+                        />
+                      </div>
+                    </div>
                   </div>
                 </div>
               </div>
@@ -431,6 +468,17 @@
                     placeholder="نام مالک"
                   />
                 </div>
+                <div class="form-group col">
+                  <label for="phone">شماره تماس</label>
+                  <input
+                    type="text"
+                    name="phone"
+                    v-model="form.phone"
+                    class="form-control"
+                    id="phone"
+                    placeholder="شماره تماس مالک"
+                  />
+                </div>
               </div>
 
               <div class="form-group">
@@ -507,10 +555,12 @@ export default {
       facilities: [],
       neighborhoods: [],
       directions: [],
+      documentTypes: [],
       viewstatus: "search",
       searchdata: [],
       allow: null,
       form: {
+        form_id: "",
         from_build_time: "",
         to_build_time: "",
         from_price: "",
@@ -525,6 +575,7 @@ export default {
         bath_count: "",
         parking_count: "",
         owner: "",
+        phone: "",
         special: "",
         address: "",
         property_category_id: "",
@@ -535,10 +586,12 @@ export default {
         facilities: [],
         sellTypes: [],
         neighborhoods: [],
+        documentTypes: [],
         direction_id: "",
         from_register_time: "",
         to_register_time: "",
       },
+      today: window.moment().format("jYYYY/jM/jD"),
     };
   },
   components: { Panel, SearchResult },
@@ -555,6 +608,7 @@ export default {
         this.features = response.data.features;
         this.facilities = response.data.facilities;
         this.directions = response.data.directions;
+        this.documentTypes = response.data.documentTypes;
         //this.neighborhoods = response.data.neighborhoods;
       })
       .catch((error) => console.log(error));
@@ -598,6 +652,16 @@ export default {
       } else {
         let filter = this.form.sellTypes.filter((el) => el != e.target.value);
         this.form.sellTypes = filter;
+      }
+    },
+    checkDocumentType(e) {
+      if (e.target.checked) {
+        this.form.documentTypes.push(e.target.value);
+      } else {
+        let filter = this.form.documentTypes.filter(
+          (el) => el != e.target.value
+        );
+        this.form.documentTypes = filter;
       }
     },
     changeCategory(e) {
@@ -644,6 +708,7 @@ export default {
     },
     clearForm() {
       this.form = {
+        form_id: "",
         from_build_time: "",
         to_build_time: "",
         from_price: "",
@@ -652,10 +717,13 @@ export default {
         to_rent_price: "",
         from_size: "",
         to_size: "",
+        from_size_g: "",
+        to_size_g: "",
         bed_count: "",
         bath_count: "",
         parking_count: "",
         owner: "",
+        phone: "",
         special: "",
         address: "",
         property_category_id: "",
@@ -665,6 +733,11 @@ export default {
         province_id: "",
         facilities: [],
         sellTypes: [],
+        neighborhoods: [],
+        documentTypes: [],
+        direction_id: "",
+        from_register_time: "",
+        to_register_time: "",
       };
     },
     findOne(haystack, arr) {
@@ -685,6 +758,10 @@ export default {
       user: (state) => state.user,
       roles: (state) => state.user && state.user.roles,
     }),
+    is_mobile() {
+      const isMobile = window.matchMedia("only screen and (max-width: 760px)");
+      return isMobile.matches ? true : false;
+    },
   },
 };
 </script>
@@ -762,10 +839,11 @@ export default {
   animation: bounce-in 0.5s reverse;
 }
 .direction {
-  justify-content: center;
   display: flex;
-  align-items: center;
   flex-wrap: wrap;
+}
+.mobileSnackBar {
+  flex-flow: column-reverse !important;
 }
 .fgd {
   width: 165px;

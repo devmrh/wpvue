@@ -5,16 +5,16 @@
     </div>
     <div class="col-md-10" v-if="allow">
       <div class="cc-title">
-        <div>مدیریت ویژگی ملک</div>
+        <div>مدیریت نوع سند</div>
         <div class="add-new">
           <div class="ml-2">افزودن جدید</div>
           <div>
             <input
               style="width: 300px"
               type="type"
-              placeholder="عنوان ویژگی جدید را وارد و اینتر بزنید"
+              placeholder="نوع جدید را وارد و اینتر بزنید"
               class="form-control"
-              v-model="feature"
+              v-model="document"
               v-on:keyup.enter="addNew"
             />
           </div>
@@ -30,8 +30,8 @@
             </tr>
           </thead>
           <tbody>
-            <template v-for="(item, index) in features">
-              <FeatureItem :key="index" :item="item"></FeatureItem>
+            <template v-for="(item, index) in documents">
+              <DocumentItem :key="index" :item="item"></DocumentItem>
             </template>
           </tbody>
         </table>
@@ -92,41 +92,41 @@ table thead tr th {
 </style>
 <script>
 import api from "../services/api";
-import FeatureItem from "./FeatureItem";
+import DocumentItem from "./DocumentItem";
 import Panel from "./Panel";
 import { mapState } from "vuex";
 
 export default {
   data() {
     return {
-      features: [],
-      feature: "",
+      documents: [],
+      document: "",
       allow: null,
     };
   },
   mounted() {
     this.allow = this.check();
     if (!this.allow) return false;
-    this.getFeatures();
+    this.getdocument();
   },
-  components: { FeatureItem, Panel },
+  components: { DocumentItem, Panel },
   methods: {
     addNew() {
-      if (this.feature.trim() != "") {
+      if (this.document.trim() != "") {
         api
-          .post("api/v1/data/add-feature", { feature: this.feature })
+          .post("api/v1/data/add-document-type", { document: this.document })
           .then((res) => {
-            this.features.push(res.data.feature);
-            this.feature = "";
+            this.documents.push(res.data.document);
+            this.document = "";
           })
           .catch((e) => console.log(e));
       }
     },
-    async getFeatures() {
+    async getdocument() {
       await api
-        .get("api/v1/data/get-features")
+        .get("api/v1/data/get-document-types")
         .then((res) => {
-          this.features = res.data.features;
+          this.documents = res.data.documents;
         })
         .catch((e) => console.log(e));
     },
@@ -144,15 +144,15 @@ export default {
     },
   },
   created() {
-    Event.$on("update-feature", (data) => {
-      let newState = this.features.map((item) =>
-        item.id === data.id ? { id: data.id, name: data.feature } : item
+    Event.$on("update-document", (data) => {
+      let newState = this.documents.map((item) =>
+        item.id === data.id ? { id: data.id, name: data.document } : item
       );
-      this.features = newState;
+      this.documents = newState;
     });
-    Event.$on("delete-feature", (data) => {
-      let newState = this.features.filter((u) => u.id !== data.id);
-      this.features = newState;
+    Event.$on("delete-document", (data) => {
+      let newState = this.documents.filter((u) => u.id !== data.id);
+      this.documents = newState;
     });
   },
   computed: {

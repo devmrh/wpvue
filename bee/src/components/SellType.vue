@@ -1,5 +1,5 @@
 <template>
-  <div class="row main-row">
+  <div class="row main-row" :class="{ mobileSnackBar: is_mobile }">
     <div class="col-md-2">
       <Panel></Panel>
     </div>
@@ -12,7 +12,7 @@
             <input
               style="width: 300px"
               type="type"
-              placeholder="عنوان ویژگی جدید را وارد و اینتر بزنید"
+              placeholder="عنوان جدید را وارد و اینتر بزنید"
               class="form-control"
               v-model="selltype"
               v-on:keyup.enter="addNew"
@@ -86,6 +86,9 @@ table tbody tr td > div {
 table thead tr th {
   font-size: 15px;
 }
+.mobileSnackBar {
+  flex-flow: column-reverse !important;
+}
 </style>
 <script>
 import api from "../services/api";
@@ -156,6 +159,10 @@ export default {
     ...mapState({
       roles: (state) => state.user && state.user.roles,
     }),
+    is_mobile() {
+      const isMobile = window.matchMedia("only screen and (max-width: 760px)");
+      return isMobile.matches ? true : false;
+    },
   },
 };
 </script>

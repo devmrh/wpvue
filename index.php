@@ -9,6 +9,7 @@
 use App\Db\Database;
 use App\Model\City;
 use App\Model\Direction;
+use App\Model\Document;
 use App\Model\Facility;
 use App\Model\Feature as Fea;
 use App\Model\Neighborhood;
@@ -26,32 +27,52 @@ try {
   // please config database correctly
 }
 
-//Register scripts to use
+
+// DEV
 function func_load_vuescripts() {
-	wp_register_script('wpvue_vuejs',plugin_dir_url( __FILE__ ).'js/app.js', true);
-	wp_register_script('my_vuecode', plugin_dir_url( __FILE__ ).'js/chunk-vendors.js', true);
+	wp_register_script('wpvue_vuejs',plugin_dir_url( __FILE__ ).'bee/dist/js/app.js', true);
+	wp_register_script('my_vuecode', plugin_dir_url( __FILE__ ).'bee/dist/js/chunk-vendors.js', true);
 }
+
+// Register style
+wp_register_style('wp.style','https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/css/bootstrap.min.css', true);
+wp_enqueue_style('wp.style');
+
+wp_register_style('wp.style.font',plugin_dir_url( __FILE__ ).'bee/src/style.css', true);
+wp_enqueue_style('wp.style.font');
+
 
 //Tell WordPress to register the scripts
 add_action('wp_enqueue_scripts', 'func_load_vuescripts');
 
-// Register style
-function my_enqueue_stuff() {
-  if ( is_page( 'amlak' ) ) {
-    /** Call landing-page-template-one enqueue */
-    wp_register_style('wp.app',plugin_dir_url( __FILE__ ).'css/app.css', true);
-    wp_enqueue_style('wp.app');
-    wp_register_style('wp.app.chunk',plugin_dir_url( __FILE__ ).'css/chunk-vendors.css', true);
-    wp_enqueue_style('wp.app.chunk');
-    wp_register_style('wp.style',plugin_dir_url( __FILE__ ).'css/bootstrap.min.css', true);
-    wp_enqueue_style('wp.style');
-    wp_register_style('wp.style.font',plugin_dir_url( __FILE__ ).'css/style.css', true);
-    wp_enqueue_style('wp.style.font');
-  } else {
-    /** Call regular enqueue */
-  }
-}
-add_action( 'wp_enqueue_scripts', 'my_enqueue_stuff' );
+
+// PROD
+//Register scripts to use
+// function func_load_vuescripts() {
+// 	wp_register_script('wpvue_vuejs',plugin_dir_url( __FILE__ ).'js/app.js', true);
+// 	wp_register_script('my_vuecode', plugin_dir_url( __FILE__ ).'js/chunk-vendors.js', true);
+// }
+
+// //Tell WordPress to register the scripts
+// add_action('wp_enqueue_scripts', 'func_load_vuescripts');
+
+// // Register style
+// function my_enqueue_stuff() {
+//   if ( is_page( 'amlak' ) ) {
+//     /** Call landing-page-template-one enqueue */
+//     wp_register_style('wp.app',plugin_dir_url( __FILE__ ).'css/app.css', true);
+//     wp_enqueue_style('wp.app');
+//     wp_register_style('wp.app.chunk',plugin_dir_url( __FILE__ ).'css/chunk-vendors.css', true);
+//     wp_enqueue_style('wp.app.chunk');
+//     wp_register_style('wp.style',plugin_dir_url( __FILE__ ).'css/bootstrap.min.css', true);
+//     wp_enqueue_style('wp.style');
+//     wp_register_style('wp.style.font',plugin_dir_url( __FILE__ ).'css/style.css', true);
+//     wp_enqueue_style('wp.style.font');
+//   } else {
+//     /** Call regular enqueue */
+//   }
+// }
+// add_action( 'wp_enqueue_scripts', 'my_enqueue_stuff' );
 
 
 //Return string for shortcode
@@ -146,6 +167,8 @@ add_action( 'rest_api_init', function () {
       $facilities = Facility::get()->toArray();
       $directions = Direction::get()->toArray();
       $neighborhoods = Neighborhood::get()->toArray();
+      $documentTypes = Document::get()->toArray();
+
       $data['provinces'] = $province;
       $data['cities'] = $cities;
       $data['categories'] = $categories;
@@ -154,6 +177,7 @@ add_action( 'rest_api_init', function () {
       $data['facilities'] = $facilities;
       $data['directions'] = $directions;
       $data['neighborhoods'] = $neighborhoods;
+      $data['documentTypes'] = $documentTypes;
       return $data;
   }
 
@@ -206,7 +230,8 @@ add_action( 'rest_api_init', function () {
         'price_label'=> $params['price_label'] ?? '',
         'rent_price'=> $rent_price ?? '',
         'rent_label'=> $params['rent_label'] ?? '',
-        'province_id'=> $params['province_id'] ?? '',
+        'province_id'=> $params['province_id'] ?? null,
+        'document_id'=> $params['document_id'] ?? null,
         'city_id'=> $params['city_id'] ?? '',
         'size'=> $params['size'] ?? '',
         'size_unit'=> $params['size_unit'] ?? '',
@@ -254,11 +279,13 @@ add_action( 'rest_api_init', function () {
         return wp_send_json_error("استان نمیتواند خالی باشد", 422);
       }
 
-      $build_time = $params['build_time'] ?? null;
-      if($build_time){
+      $build_time = $params['build_time'];
+      if($build_time != ""){
         $bt = str_replace("/","-",$build_time);
         $build_time = \Morilog\Jalali\CalendarUtils::createCarbonFromFormat('Y-m-d', $bt)->format('Y-m-d');
 
+      }else{
+        $build_time = null;
       }
 
       if($params['price']){
@@ -274,6 +301,7 @@ add_action( 'rest_api_init', function () {
         'property_category_id'=> $params['property_category_id'] ?? null,
         'sell_type_id'=> $params['sell_type_id'] ?? null,
         'feature_id'=> $params['feature_id'] ?? null,
+        'document_id'=> $params['document_id'] ?? null,
         'price'=> $price ?? '',
         'price_label'=> $params['price_label'] ?? '',
         'rent_price'=> $rent_price ?? '',
@@ -515,6 +543,79 @@ add_action( 'rest_api_init', function () {
 
 ########## end 2 ##############
 
+
+// start document type
+########## 2.5 ############
+
+add_action( 'rest_api_init', function () {
+  register_rest_route( 'api/v1', '/data/get-document-types', array(
+        'methods' => 'GET',
+        'callback' => 'ea_get_document_types',
+        'permissions_callback' => 'is_user_logged_in',
+
+      ) );
+  } );
+
+  function ea_get_document_types( $data ) {
+
+      $documents = Document::get();
+      return compact('documents');
+
+}
+add_action( 'rest_api_init', function () {
+  register_rest_route( 'api/v1', '/data/add-document-type', array(
+        'methods' => 'POST',
+        'callback' => 'ea_add_document_type',
+        'permissions_callback' => 'is_user_logged_in',
+
+      ) );
+  } );
+
+  function ea_add_document_type( $data ) {
+    $params = $data->get_params();
+    $c = $params["document"];
+    $document = Document::create(['name' => $c]);
+    return compact('document');
+
+}
+add_action( 'rest_api_init', function () {
+  register_rest_route( 'api/v1', '/data/edit-document-type', array(
+        'methods' => 'POST',
+        'callback' => 'ea_edit_document_type',
+        'permissions_callback' => 'is_user_logged_in',
+
+      ) );
+  } );
+
+  function ea_edit_document_type( $data ) {
+    $params = $data->get_params();
+    $c = $params["document"];
+    $id = $params["id"];
+    Document::find($id)->update(['name' => $c]);
+    return "success";
+
+}
+
+
+add_action( 'rest_api_init', function () {
+  register_rest_route( 'api/v1', '/data/delete-document-type', array(
+        'methods' => 'POST',
+        'callback' => 'ea_delete_document_type',
+        'permissions_callback' => 'is_user_logged_in',
+
+      ) );
+  } );
+
+  function ea_delete_document_type( $data ) {
+      $params = $data->get_params();
+      $id =  $params['id'];
+      Document::find($id)->delete();
+      return "موفق";
+
+}
+
+###################
+
 // feature
 ########## 3 ##########
 
@@ -726,26 +827,11 @@ add_action( 'rest_api_init', function () {
   function ea_get_data_search( $data ) {
     $params = $data->get_params();
 
-    $from_build_time = $params['from_build_time'];
-    $to_build_time = $params['to_build_time'];
-
     $form_register_time = $params['from_register_time'];
     $to_register_time = $params['to_register_time'];
 
     // from build time - to build time - from register time - to register time
 
-    if($from_build_time){
-      $fbt = str_replace("/","-",$from_build_time);
-      $from_build_time = \Morilog\Jalali\CalendarUtils::createCarbonFromFormat('Y-m-d', $fbt)->format('Y-m-d');
-
-    }
-    if($to_build_time){
-      $fbt = str_replace("/","-",$to_build_time);
-      $to_build_time = \Morilog\Jalali\CalendarUtils::createCarbonFromFormat('Y-m-d', $fbt)->format('Y-m-d');
-
-    }else{
-        $to_build_time = date("Y-m-d");
-    }
 
     if($form_register_time){
       $fbt = str_replace("/","-",$form_register_time);
@@ -774,6 +860,7 @@ add_action( 'rest_api_init', function () {
     $bath_count = $params['bath_count'];
     $parking_count = $params['parking_count'];
     $owner = $params['owner'];
+    $phone = $params['phone'];
     $special = $params['special'];
     $address = $params['address'];
     $property_category_id = $params['property_category_id'];
@@ -782,11 +869,13 @@ add_action( 'rest_api_init', function () {
     $city_id = $params['city_id'];
     $province_id = $params['province_id'];
     $direction_id = $params['direction_id'];
-
+    $from_build_time = (int)$params['from_build_time'];
+    $to_build_time = (int)$params['to_build_time'];
     $facilities = $params['facilities']; // array
     $sellTypes = $params['sellTypes'] ?? []; // array
     $neighborhoods = $params['neighborhoods'] ?? []; // array
-
+    $documentTypes = $params['documentTypes'] ?? []; // array
+    $form_id = $params['form_id'];
 
     //return $facilities;
     $query = Property::query();
@@ -814,14 +903,19 @@ add_action( 'rest_api_init', function () {
     $query->when($owner, function ($q, $search) {
       return $q->where('owner', 'like', '%'.$search.'%' );
     });
+
+    $query->when($phone, function ($q, $search) {
+      return $q->where('phone', 'like', '%'.$search.'%' );
+    });
+
     $query->when($bed_count, function ($q, $search) {
-      return $q->where('bed_count', $search );
+      return $q->where('bed_count','>=', $search );
     });
     $query->when($bath_count, function ($q, $search) {
-      return $q->where('bath_count', $search );
+      return $q->where('bath_count','>=', $search );
     });
     $query->when($parking_count, function ($q, $search) {
-      return $q->where('parking_count', $search );
+      return $q->where('parking_count','>=', $search );
     });
     $query->when($special, function ($q, $search) {
       return $q->where('special', 1 );
@@ -855,12 +949,21 @@ add_action( 'rest_api_init', function () {
 
     });
 
+    $query->when($form_id, function ($q, $search) {
+      return $q->where('id', $search );
+
+    });
+
     $query->when($sellTypes, function ($q, $search) {
       return  $q->whereIn('sell_type_id', $search);
 
     });
     $query->when($neighborhoods, function ($q, $search) {
       return  $q->whereIn('neighborhood_id', $search);
+    });
+
+    $query->when($documentTypes, function ($q, $search) {
+      return  $q->whereIn('document_id', $search);
     });
 
     if($from_build_time  || $to_build_time ){

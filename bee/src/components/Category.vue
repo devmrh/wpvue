@@ -1,5 +1,5 @@
 <template>
-  <div class="row main-row">
+  <div class="row main-row" :class="{ mobileSnackBar: is_mobile }">
     <div class="col-md-2">
       <Panel></Panel>
     </div>
@@ -76,6 +76,9 @@
   background: #f7f7f7;
   padding: 5px;
 }
+.mobileSnackBar {
+  flex-flow: column-reverse !important;
+}
 input,
 select {
   font-size: 15px !important;
@@ -98,7 +101,7 @@ export default {
     return {
       categories: [],
       category: "",
-      allow: null
+      allow: null,
     };
   },
   mounted() {
@@ -156,6 +159,10 @@ export default {
     ...mapState({
       roles: (state) => state.user && state.user.roles,
     }),
+    is_mobile() {
+      const isMobile = window.matchMedia("only screen and (max-width: 760px)");
+      return isMobile.matches ? true : false;
+    },
   },
 };
 </script>
