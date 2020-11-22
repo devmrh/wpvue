@@ -11,11 +11,11 @@
           <router-link to="/search" class="text-white">صفحه جستجو</router-link>
         </button>
       </div>
-      <div>
+      <!-- <div>
         <button class="btn btn-primary btn-lg btn-block cus-btn">
             <router-link to="/manage" class="text-white">مدیریت</router-link>
         </button>
-      </div>
+      </div> -->
       <div>
         <button class="btn btn-primary btn-lg btn-block mt-3 cus-btn">
             <router-link to="/category" class="text-white">مدیریت دسته ها</router-link>

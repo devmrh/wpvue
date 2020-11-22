@@ -41,12 +41,6 @@ DB::table('facilities')->insert([
   ['name' => 'پارکینگ', 'slug' => 'parking'],
   ['name' => 'انباری', 'slug' => 'warehouse'],
 ]);
-DB::table('directions')->insert([
-  ['name' => 'شمال', 'slug' => ''],
-  ['name' => 'جنوب', 'slug' => ''],
-  ['name' => 'شرق', 'slug' => ''],
-  ['name' => 'غرب', 'slug' => ''],
-]);
 
 DB::table('documents')->insert([
   ['name' => 'شخصی', 'slug' => ''],

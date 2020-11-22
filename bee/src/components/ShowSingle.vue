@@ -95,7 +95,7 @@
                   class="form-check-input"
                   type="checkbox"
                   :id="'facilities' + index"
-                  :value="item.id"
+                  :checked="true"
                 />
                 <label
                   class="form-check-label"
@@ -113,7 +113,7 @@
             <label for="price">قیمت ملک</label>
             <input
               disabled
-              type="number"
+              type="text"
               name="price"
               class="form-control"
               id="price"
@@ -133,10 +133,9 @@
               placeholder="مانند: میلیون تومان"
             />
           </div>
-
         </div>
         <div class="form-row">
-                    <div class="form-group col-md-6 col-sm-12">
+          <div class="form-group col-md-6 col-sm-12">
             <label for="rent_price">قیمت اجاره</label>
             <input
               disabled
@@ -388,12 +387,19 @@ export default {
     };
   },
   props: ["singleform"],
-  methods: {},
+  methods: {
+    formatPrice(price) {
+      return price.replace(/\B(?=(\d{3})+(?!\d))/g, ",")
+
+    },
+  },
   mounted() {
     this.form = { ...this.singleform };
     this.form.facilities = this.facilities;
     this.form.id = this.singleform.id;
 
+    this.form.price = this.formatPrice(this.singleform.price);
+    this.form.rent_price = this.formatPrice(this.singleform.rent_price)
     api
       .get("api/v1/data")
       .then((response) => {
@@ -410,9 +416,9 @@ export default {
     //this.user_id = this.user.user.ID;
   },
   computed: {
-    // ...mapState({
-    //   user: (state) => state.user,
-    // }),
+
+
+
   },
 };
 </script>

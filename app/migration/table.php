@@ -73,13 +73,6 @@ Capsule::schema()->create('facilities', function($table){
 
 });
 
-Capsule::schema()->create('directions', function($table){
-  $table->bigIncrements('id');
-  $table->string('name');
-  $table->string('slug')->nullable();
-  $table->timestamps();
-
-});
 
 Capsule::schema()->create('neighborhoods', function($table){
   $table->bigIncrements('id');
@@ -107,7 +100,6 @@ Capsule::schema()->create('properties', function($table){
   $table->unsignedBigInteger('feature_id')->nullable();
   $table->unsignedBigInteger('city_id')->nullable();
   $table->unsignedBigInteger('province_id')->nullable();
-  $table->unsignedBigInteger('direction_id')->nullable();
   $table->unsignedBigInteger('neighborhood_id')->nullable();
   $table->unsignedBigInteger('document_id')->nullable();
 
@@ -133,6 +125,10 @@ Capsule::schema()->create('properties', function($table){
   $table->string('build_time')->nullable();
 
   $table->boolean('special')->default(0);
+  $table->boolean('is_north')->default(0);
+  $table->boolean('is_south')->default(0);
+  $table->boolean('is_west')->default(0);
+  $table->boolean('is_east')->default(0);
   $table->timestamps();
 
   $table->foreign('property_category_id')->references('id')->on('property_categories')->onDelete('no action')->onUpdate('cascade');
@@ -140,7 +136,6 @@ Capsule::schema()->create('properties', function($table){
   $table->foreign('feature_id')->references('id')->on('features')->onDelete('no action')->onUpdate('cascade');
   $table->foreign('city_id')->references('id')->on('cities')->onDelete('no action')->onUpdate('cascade');
   $table->foreign('province_id')->references('id')->on('provinces')->onDelete('no action')->onUpdate('cascade');
-  $table->foreign('direction_id')->references('id')->on('directions')->onDelete('no action')->onUpdate('cascade');
   $table->foreign('neighborhood_id')->references('id')->on('neighborhoods')->onDelete('no action')->onUpdate('cascade');
   $table->foreign('document_id')->references('id')->on('documents')->onDelete('no action')->onUpdate('cascade');
 

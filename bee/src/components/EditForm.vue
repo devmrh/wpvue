@@ -1,5 +1,5 @@
 <template>
-  <div class="row" :class="{ mobileSnackBar: is_mobile }" >
+  <div class="row" :class="{ mobileSnackBar: is_mobile }">
     <div class="col-md-2">
       <Panel></Panel>
     </div>
@@ -128,7 +128,6 @@
                       v-for="(item, index) in documentTypes"
                       :key="index"
                       :value="item.id"
-
                     >
                       {{ item.name }}
                     </option>
@@ -160,7 +159,11 @@
                 <label for="facilities" style="margin: 0; margin-left: 20px"
                   >امکاناتس</label
                 >
-                <div v-if="property && property.facilities.length > 0" class="d-flex" style="flex-wrap: wrap">
+                <div
+                  v-if="facilities.length > 0"
+                  class="d-flex"
+                  style="flex-wrap: wrap"
+                >
                   <div
                     class="form-check"
                     v-for="(item, index) in facilities"
@@ -173,8 +176,7 @@
                       :id="'facilities' + index"
                       :value="item.id"
                       v-model="form.facilities"
-                      :checked=form.facilities.includes(item.id)
-
+                      :checked="form.facilities.includes(item.id)"
                     />
                     <label
                       class="form-check-label"
@@ -291,24 +293,53 @@
                 </select>
               </div>
               <div class="form-group col-sm-12 col-md-6 direction">
-                <div
-                  v-for="(item, index) in directions"
-                  :key="index"
-                  class="custom-control custom-radio custom-control-inline"
-                >
+                <div class="form-check">
                   <input
-                    @change="setDirection($event)"
-                    type="radio"
-                    :value="item.id"
-                    :id="'customRadioInline1' + index"
+                    v-model="form.is_north"
+                    type="checkbox"
+                    id="customRadioInline1"
                     name="customRadioInline1"
-                    class="custom-control-input"
-                    :checked="item.id == form.direction_id"
+                    class="form-check-input"
+                    :checked="form.is_north"
                   />
-                  <label
-                    class="custom-control-label"
-                    :for="'customRadioInline1' + index"
-                    >{{ item.name }}</label
+                  <label class="form-check-label" for="customRadioInline1"
+                    >شمال</label
+                  >
+                </div>
+                <div class="form-check">
+                  <input
+                    v-model="form.is_south"
+                    type="checkbox"
+                    id="customRadioInline2"
+                    class="form-check-input"
+                    :checked="form.is_south"
+                  />
+                  <label class="form-check-label" for="customRadioInline1"
+                    >جنوب</label
+                  >
+                </div>
+                <div class="form-check">
+                  <input
+                    v-model="form.is_west"
+                    type="checkbox"
+                    id="customRadioInline13"
+                    class="form-check-input"
+                    :checked="form.is_west"
+                  />
+                  <label class="form-check-label" for="customRadioInline13"
+                    >غرب</label
+                  >
+                </div>
+                <div class="form-check">
+                  <input
+                    v-model="form.is_east"
+                    type="checkbox"
+                    id="customRadioInline14"
+                    class="form-check-input"
+                    :checked="form.is_east"
+                  />
+                  <label class="form-check-label" for="customRadioInline14"
+                    >شرق</label
                   >
                 </div>
               </div>
@@ -437,7 +468,7 @@
                   type="button"
                   class="btn btn-warning text-white btn-lg btn-block mt-3 cus-btn"
                 >
-                  <router-link to="/manage" class="text-white"
+                  <router-link to="/search" class="text-white"
                     >بازگشت</router-link
                   >
                 </button>
@@ -471,21 +502,20 @@ export default {
       cities: [],
       facilities: [],
       neighborhoods: [],
-      directions: [],
       documentTypes: [],
       form: {
         id: "",
         title: "",
-        property_category_id: "",
-        sell_type_id: "",
-        feature_id: "",
-        document_id: "",
+        property_category_id: null,
+        sell_type_id: null,
+        feature_id: null,
+        document_id: null,
         price: "",
         price_label: "",
         rent_price: "",
         rent_label: "",
-        province_id: "",
-        neighborhood_id: "",
+        province_id: null,
+        neighborhood_id: null,
         city_id: "",
         size: "",
         size_unit: "",
@@ -499,13 +529,16 @@ export default {
         description: "",
         special: "",
         facilities: [],
-        direction_id: "",
+        is_north: null,
+        is_south: null,
+        is_west: null,
+        is_east: null,
       },
       err: "",
       info: "",
       today: window.moment().format("jYYYY/jM/jD"),
       property_id: "{DATABAM-ID}",
-      property: "",
+      property: {},
     };
   },
   props: [],
@@ -517,10 +550,6 @@ export default {
         .replace(/\D/g, "")
         .replace(/\B(?=(\d{3})+(?!\d))/g, ",");
       this.$set(this.form, name, res);
-    },
-    setDirection(e) {
-      let id = e.target.value;
-      this.form.direction_id = id;
     },
     checkFacility(e) {
       if (e.target.checked) {
@@ -583,34 +612,30 @@ export default {
           this.err = e.response.data.data;
         });
     },
-    getData(id) {
-      let data = this.properties.data.find((el) => el.id == id);
-      return data;
+    async getByID(id) {
+      await api
+        .get(`api/v1/data/get-single-property?id=${id}`)
+        .then((response) => {
+          this.categories = response.data.categories;
+          this.sellTypes = response.data.sellTypes;
+          this.provinces = response.data.provinces;
+          this.cities = response.data.cities;
+          this.features = response.data.features;
+          this.facilities = response.data.facilities;
+          this.neighborhoods = response.data.neighborhoods;
+          this.documentTypes = response.data.documentTypes;
+
+          this.form = response.data.property;
+
+          let idis = response.data.property.facilities.map((a) => a.id);
+          this.form.facilities = idis;
+        })
+        .catch((error) => console.log(error));
     },
   },
   mounted() {
     const id = this.$route.params.id;
-    //console.log(a);
-    this.property = this.getData(id);
-    this.form = { ...this.property };
-    this.form.id = this.property.id;
-    let ids = this.property.facilities.map((a) => a.id);
-    this.form.facilities = ids;
-
-    api
-      .get("api/v1/data")
-      .then((response) => {
-        this.categories = response.data.categories;
-        this.sellTypes = response.data.sellTypes;
-        this.provinces = response.data.provinces;
-        this.cities = response.data.cities;
-        this.features = response.data.features;
-        this.facilities = response.data.facilities;
-        this.directions = response.data.directions;
-        this.neighborhoods = response.data.neighborhoods;
-        this.documentTypes = response.data.documentTypes;
-      })
-      .catch((error) => console.log(error));
+    this.getByID(id);
   },
   computed: {
     ...mapState({
@@ -620,7 +645,6 @@ export default {
       const isMobile = window.matchMedia("only screen and (max-width: 760px)");
       return isMobile.matches ? true : false;
     },
-
   },
 };
 </script>
@@ -668,5 +692,8 @@ export default {
 input,
 select {
   font-size: 15px !important;
+}
+textarea {
+  font-size: 14px;
 }
 </style>

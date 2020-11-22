@@ -29,50 +29,50 @@ try {
 
 
 // DEV
-function func_load_vuescripts() {
-	wp_register_script('wpvue_vuejs',plugin_dir_url( __FILE__ ).'bee/dist/js/app.js', true);
-	wp_register_script('my_vuecode', plugin_dir_url( __FILE__ ).'bee/dist/js/chunk-vendors.js', true);
-}
-
-// Register style
-wp_register_style('wp.style','https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/css/bootstrap.min.css', true);
-wp_enqueue_style('wp.style');
-
-wp_register_style('wp.style.font',plugin_dir_url( __FILE__ ).'bee/src/style.css', true);
-wp_enqueue_style('wp.style.font');
-
-
-//Tell WordPress to register the scripts
-add_action('wp_enqueue_scripts', 'func_load_vuescripts');
-
-
-// PROD
-//Register scripts to use
 // function func_load_vuescripts() {
-// 	wp_register_script('wpvue_vuejs',plugin_dir_url( __FILE__ ).'js/app.js', true);
-// 	wp_register_script('my_vuecode', plugin_dir_url( __FILE__ ).'js/chunk-vendors.js', true);
+// 	wp_register_script('wpvue_vuejs',plugin_dir_url( __FILE__ ).'bee/dist/js/app.js', true);
+// 	wp_register_script('my_vuecode', plugin_dir_url( __FILE__ ).'bee/dist/js/chunk-vendors.js', true);
 // }
+
+// // Register style
+// wp_register_style('wp.style','https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/css/bootstrap.min.css', true);
+// wp_enqueue_style('wp.style');
+
+// wp_register_style('wp.style.font',plugin_dir_url( __FILE__ ).'bee/src/style.css', true);
+// wp_enqueue_style('wp.style.font');
+
 
 // //Tell WordPress to register the scripts
 // add_action('wp_enqueue_scripts', 'func_load_vuescripts');
 
-// // Register style
-// function my_enqueue_stuff() {
-//   if ( is_page( 'amlak' ) ) {
-//     /** Call landing-page-template-one enqueue */
-//     wp_register_style('wp.app',plugin_dir_url( __FILE__ ).'css/app.css', true);
-//     wp_enqueue_style('wp.app');
-//     wp_register_style('wp.app.chunk',plugin_dir_url( __FILE__ ).'css/chunk-vendors.css', true);
-//     wp_enqueue_style('wp.app.chunk');
-//     wp_register_style('wp.style',plugin_dir_url( __FILE__ ).'css/bootstrap.min.css', true);
-//     wp_enqueue_style('wp.style');
-//     wp_register_style('wp.style.font',plugin_dir_url( __FILE__ ).'css/style.css', true);
-//     wp_enqueue_style('wp.style.font');
-//   } else {
-//     /** Call regular enqueue */
-//   }
-// }
-// add_action( 'wp_enqueue_scripts', 'my_enqueue_stuff' );
+
+// PROD
+//Register scripts to use
+function func_load_vuescripts() {
+	wp_register_script('wpvue_vuejs',plugin_dir_url( __FILE__ ).'js/app.js', true);
+	wp_register_script('my_vuecode', plugin_dir_url( __FILE__ ).'js/chunk-vendors.js', true);
+}
+
+//Tell WordPress to register the scripts
+add_action('wp_enqueue_scripts', 'func_load_vuescripts');
+
+// Register style
+function my_enqueue_stuff() {
+  if ( is_page( 'amlak' ) ) {
+    /** Call landing-page-template-one enqueue */
+    wp_register_style('wp.app',plugin_dir_url( __FILE__ ).'css/app.css', true);
+    wp_enqueue_style('wp.app');
+    wp_register_style('wp.app.chunk',plugin_dir_url( __FILE__ ).'css/chunk-vendors.css', true);
+    wp_enqueue_style('wp.app.chunk');
+    wp_register_style('wp.style',plugin_dir_url( __FILE__ ).'css/bootstrap.min.css', true);
+    wp_enqueue_style('wp.style');
+    wp_register_style('wp.style.font',plugin_dir_url( __FILE__ ).'css/style.css', true);
+    wp_enqueue_style('wp.style.font');
+  } else {
+    /** Call regular enqueue */
+  }
+}
+add_action( 'wp_enqueue_scripts', 'my_enqueue_stuff' );
 
 
 //Return string for shortcode
@@ -80,7 +80,6 @@ function func_wp_vue(){
 
   $user = wp_get_current_user();
   $user = json_encode($user);
- // print_r($user);
   //Add Vue.js
   wp_enqueue_script('wpvue_vuejs');
   //Add my code to it
@@ -105,8 +104,6 @@ function func_wp_vue(){
 
 //Add shortcode to WordPress
 add_shortcode( 'wpvue', 'func_wp_vue' );
-
-
 
 
 //get cities
@@ -165,7 +162,6 @@ add_action( 'rest_api_init', function () {
       $sellType = SellType::get()->toArray();
       $feature = Fea::get()->toArray();
       $facilities = Facility::get()->toArray();
-      $directions = Direction::get()->toArray();
       $neighborhoods = Neighborhood::get()->toArray();
       $documentTypes = Document::get()->toArray();
 
@@ -175,7 +171,6 @@ add_action( 'rest_api_init', function () {
       $data['sellTypes'] = $sellType;
       $data['features'] = $feature;
       $data['facilities'] = $facilities;
-      $data['directions'] = $directions;
       $data['neighborhoods'] = $neighborhoods;
       $data['documentTypes'] = $documentTypes;
       return $data;
@@ -203,13 +198,6 @@ add_action( 'rest_api_init', function () {
       }
       if(empty($params['province_id'])){
         return wp_send_json_error("استان نمیتواند خالی باشد", 422);
-      }
-
-      $build_time = $params['build_time'] ?? null;
-      if($build_time){
-        $bt = str_replace("/","-",$build_time);
-        $build_time = \Morilog\Jalali\CalendarUtils::createCarbonFromFormat('Y-m-d', $bt)->format('Y-m-d');
-
       }
 
       if($params['price']){
@@ -244,9 +232,12 @@ add_action( 'rest_api_init', function () {
         'address'=> $params['address'] ?? '',
         'description'=> $params['description'] ?? '',
         'user_id' => $params['user_id'],
-        'direction_id' => $params['direction_id'],
         'neighborhood_id' => $params['neighborhood_id'],
         'special'=> $params['special']  == true ? 1 : 0,
+        'is_west'=> $params['is_west']  == true ? 1 : 0,
+        'is_east'=> $params['is_east']  == true ? 1 : 0,
+        'is_north'=> $params['is_north']  == true ? 1 : 0,
+        'is_south'=> $params['is_south']  == true ? 1 : 0,
       ]);
 
       $facilities = $params['facilities'];
@@ -279,15 +270,6 @@ add_action( 'rest_api_init', function () {
         return wp_send_json_error("استان نمیتواند خالی باشد", 422);
       }
 
-      $build_time = $params['build_time'];
-      if($build_time != ""){
-        $bt = str_replace("/","-",$build_time);
-        $build_time = \Morilog\Jalali\CalendarUtils::createCarbonFromFormat('Y-m-d', $bt)->format('Y-m-d');
-
-      }else{
-        $build_time = null;
-      }
-
       if($params['price']){
         $price = str_replace(",","",$params['price']);
       }
@@ -315,11 +297,14 @@ add_action( 'rest_api_init', function () {
         'parking_count'=> $params['parking_count'] ?? '',
         'owner'=> $params['owner'] ?? '',
         'phone'=> $params['phone'] ?? '',
-        'build_time'=> $build_time ?? '',
+        'build_time'=> $params['build_time'] ?? '',
         'address'=> $params['address'] ?? '',
         'description'=> $params['description'] ?? '',
         'special'=> $params['special']  == true ? 1 : 0,
-        'direction_id' => $params['direction_id'],
+        'is_west'=> $params['is_west']  == true ? 1 : 0,
+        'is_east'=> $params['is_east']  == true ? 1 : 0,
+        'is_north'=> $params['is_north']  == true ? 1 : 0,
+        'is_south'=> $params['is_south']  == true ? 1 : 0,
         'neighborhood_id' => $params['neighborhood_id']
 
       ]);
@@ -328,6 +313,50 @@ add_action( 'rest_api_init', function () {
       $property = Property::find($form_id);
       $property->facilities()->sync($facilities);
       return "موفق";
+
+}
+
+// get single property
+add_action( 'rest_api_init', function () {
+  register_rest_route( 'api/v1', '/data/get-single-property', array(
+        'methods' => 'GET',
+        'callback' => 'ea_get_single_property',
+        'permissions_callback' => 'is_user_logged_in',
+
+      ) );
+  } );
+
+function ea_get_single_property( $data ) {
+
+  $params = $data->get_params();
+  $id = $params['id'];
+
+
+  $data = [];
+  $province = Province::get()->toArray();
+  $cities = City::get()->toArray();
+  $categories = PropertyCategory::get()->toArray();
+  $sellType = SellType::get()->toArray();
+  $feature = Fea::get()->toArray();
+  $facilities = Facility::get()->toArray();
+  $neighborhoods = Neighborhood::get()->toArray();
+  $documentTypes = Document::get()->toArray();
+  $property = Property::with('facilities')->where('id', $id)->first();
+
+  $data['provinces'] = $province;
+  $data['cities'] = $cities;
+  $data['categories'] = $categories;
+  $data['sellTypes'] = $sellType;
+  $data['features'] = $feature;
+  $data['facilities'] = $facilities;
+  $data['neighborhoods'] = $neighborhoods;
+  $data['documentTypes'] = $documentTypes;
+  $data['property'] = $property;
+  return $data;
+
+
+
+  return $data;
 
 }
 
@@ -832,26 +861,26 @@ add_action( 'rest_api_init', function () {
 
     // from build time - to build time - from register time - to register time
 
-
-    if($form_register_time){
+    if($form_register_time != ""){
       $fbt = str_replace("/","-",$form_register_time);
-      $form_register_time = \Morilog\Jalali\CalendarUtils::createCarbonFromFormat('Y-m-d', $fbt)->format('Y-m-d');
-
+      $form_register_time = \Morilog\Jalali\CalendarUtils::createCarbonFromFormat('Y-m-d', "1399-09-02")->format('Y-m-d');
     }
-    if($to_register_time){
+
+    if($to_register_time != ""){
       $fbt = str_replace("/","-",$to_register_time);
       $to_register_time = \Morilog\Jalali\CalendarUtils::createCarbonFromFormat('Y-m-d', $fbt)->format('Y-m-d');
 
     }else{
       $to_register_time = date("Y-m-d");
+      $to_register_time = date('Y-m-d', strtotime($to_register_time . ' +1 day'));
     }
 
 
 
-    $from_price = (int)$params['from_price'];
-    $to_price = (int)$params['to_price'];
-    $from_rent_price = (int)$params['from_rent_price'];
-    $to_rent_price = (int)$params['to_rent_price'];
+    $from_price = $params['from_price'];
+    $to_price = $params['to_price'];
+    $from_rent_price = $params['from_rent_price'];
+    $to_rent_price = $params['to_rent_price'];
     $from_size = (int)$params['from_size'];
     $to_size =  (int)$params['to_size'];
     $from_size_g = (int)$params['from_size_g'];
@@ -868,7 +897,12 @@ add_action( 'rest_api_init', function () {
     $feature_id = $params['feature_id'];
     $city_id = $params['city_id'];
     $province_id = $params['province_id'];
-    $direction_id = $params['direction_id'];
+
+    $west = $params['is_west'];
+    $east = $params['is_east'];
+    $north = $params['is_north'];
+    $south = $params['is_south'];
+
     $from_build_time = (int)$params['from_build_time'];
     $to_build_time = (int)$params['to_build_time'];
     $facilities = $params['facilities']; // array
@@ -924,6 +958,7 @@ add_action( 'rest_api_init', function () {
       return $q->where('address', 'like', '%'.$search.'%' );
 
     });
+
     $query->when($property_category_id, function ($q, $search) {
       return $q->where('property_category_id', $search );
 
@@ -944,10 +979,6 @@ add_action( 'rest_api_init', function () {
       return $q->where('province_id', $search );
 
     });
-    $query->when($direction_id, function ($q, $search) {
-      return $q->where('direction_id', $search );
-
-    });
 
     $query->when($form_id, function ($q, $search) {
       return $q->where('id', $search );
@@ -966,46 +997,74 @@ add_action( 'rest_api_init', function () {
       return  $q->whereIn('document_id', $search);
     });
 
-    if($from_build_time  || $to_build_time ){
-
-      $query->whereBetween('build_time', [$from_build_time, $to_build_time]);
+    if($from_build_time){
+      $query->whereRaw("(build_time >= ?) ", [$from_build_time]);
     }
 
-    if($form_register_time  || $to_register_time ){
+    if($to_build_time){
+      $query->whereRaw("(build_time <= ?) ", [$to_build_time]);
+    }
 
-      $query->whereBetween('created_at', [$form_register_time, $to_register_time ]);
+    if(!empty($form_register_time) ){
+
+     $query->whereBetween('created_at', [$form_register_time, $to_register_time ]);
+    }
+    // $query->where('is_north', 1 );
+    // $aa = $query->get();
+    // return $aa;
+
+    $from_price = (int) $from_price;
+    if($from_price){
+      $query->whereRaw("(price >= ?) ", [$from_price]);
+    }
+
+    $to_price = (int) $to_price;
+    if($to_price){
+      $query->whereRaw("(price <= ?) ", [$to_price]);
+    }
+
+    $from_rent_price = (int) $from_rent_price;
+    if($from_rent_price){
+      $query->whereRaw("(rent_price >= ?) ", [$from_rent_price]);
+    }
+    $to_rent_price = (int) $to_rent_price;
+    if($to_rent_price){
+      $query->whereRaw("(rent_price <= ?) ", [$to_rent_price]);
     }
 
 
-    if($from_price  || $to_price ){
-      if(!$to_price){
-        $to_price = 100000000000;
-      }
-      $query->whereRaw("(price <= ? AND price >= ?) ", [$to_price, $from_price]);
-    }
-    if($from_rent_price  || $to_rent_price ){
-      if(!$to_rent_price){
-        $to_rent_price = 100000000;
-      }
-      $query->whereRaw("(rent_price <= ? AND rent_price >= ?) ", [$to_rent_price, $from_rent_price]);
+    if($from_size){
+      $query->whereRaw("(size >= ?) ", [$from_size]);
     }
 
-    if($from_size  || $to_size ){
-      if(!$to_size){
-        $to_size = 1000;
-      }
-      $query->whereRaw("(size <= ? AND size >= ?) ", [$to_size  , $from_size ]);
+    if($to_size){
+      $query->whereRaw("(size <= ?) ", [$to_size]);
     }
 
-    if($from_size_g  || $to_size_g ){
-      if(!$to_size_g){
-        $to_size_g = 1000;
-      }
-      $query->whereRaw("(size <= ? AND size >= ?) ", [$to_size_g  , $from_size_g ]);
+    if($from_size_g){
+      $query->whereRaw("(size >= ?) ", [$from_size_g]);
     }
 
+    if($to_size_g){
+      $query->whereRaw("(size <= ?) ", [$to_size_g]);
+    }
+
+    $query->when($north, function ($q, $search) {
+      return $q->where('is_north', 1 );
+    });
+
+    $query->when($south, function ($q, $search) {
+      return $q->where('is_south', 1 );
+    });
+
+    $query->when($west, function ($q, $search) {
+      return $q->where('is_west', 1 );
+    });
+    $query->when($east, function ($q, $search) {
+      return $q->where('is_east', 1 );
+    });
    // $data = [];
-    $data =  $query->limit(50)->get()->toArray();
+    $data =  $query->with('facilities')->limit(50)->get()->toArray();
    // return $data;
 
   if($facilities){

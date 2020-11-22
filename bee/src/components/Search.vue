@@ -5,7 +5,7 @@
     </div>
     <div class="col-md-10" v-if="allow">
       <div class="create-from-title">جستجو در املاک</div>
-      <div class="container search-form">
+      <div class="search-form">
         <form @submit.prevent="handleSubmit" style="width: 100%">
           <div class="row">
             <div class="col-md-4">
@@ -16,6 +16,7 @@
                     id="province_id"
                     @change="getCityByProvince($event)"
                     class="form-control"
+                    v-model="form.province_id"
                   >
                     <option
                       :value="item.id"
@@ -33,6 +34,7 @@
                     id="city_id"
                     @change="changeCity($event)"
                     class="form-control"
+                    v-model="form.city_id"
                   >
                     <option
                       v-for="(item, index) in cities"
@@ -60,30 +62,63 @@
                       type="checkbox"
                       :id="'neighborhooh_id' + index"
                       :value="item.id"
+                      :checked="form.neighborhoods"
+                      v-model="form.neighborhoods"
                     />
                     <label class="form-check-label" :for="'gridCheck' + index">
                       {{ item.name }}
                     </label>
                   </div>
                 </div>
-                <div class="form-group col-md-12 direction distinct">
-                  <div
-                    v-for="(item, index) in directions"
-                    :key="index"
-                    class="custom-control custom-radio custom-control-inline"
-                  >
+
+                <div class="form-group col-sm-12 col-md-12 direction">
+                  <div class="form-check">
                     <input
-                      @change="setDirection($event)"
-                      type="radio"
-                      :value="item.id"
-                      :id="'customRadioInline1' + index"
+                      v-model="form.is_north"
+                      type="checkbox"
+                      id="customRadioInline1"
                       name="customRadioInline1"
-                      class="custom-control-input"
+                      class="form-check-input"
+                      :checked="form.is_north"
                     />
-                    <label
-                      class="custom-control-label"
-                      :for="'customRadioInline1' + index"
-                      >{{ item.name }}</label
+                    <label class="form-check-label" for="customRadioInline1"
+                      >شمال</label
+                    >
+                  </div>
+                  <div class="form-check">
+                    <input
+                      v-model="form.is_south"
+                      type="checkbox"
+                      id="customRadioInline2"
+                      class="form-check-input"
+                      :checked="form.is_south"
+                    />
+                    <label class="form-check-label" for="customRadioInline1"
+                      >جنوب</label
+                    >
+                  </div>
+                  <div class="form-check">
+                    <input
+                      v-model="form.is_west"
+                      type="checkbox"
+                      id="customRadioInline13"
+                      class="form-check-input"
+                      :checked="form.is_west"
+                    />
+                    <label class="form-check-label" for="customRadioInline13"
+                      >غرب</label
+                    >
+                  </div>
+                  <div class="form-check">
+                    <input
+                      v-model="form.is_east"
+                      type="checkbox"
+                      id="customRadioInline14"
+                      class="form-check-input"
+                      :checked="form.is_east"
+                    />
+                    <label class="form-check-label" for="customRadioInline14"
+                      >شرق</label
                     >
                   </div>
                 </div>
@@ -114,7 +149,7 @@
               <div class="form-row align-items-center distinct">
                 <div class="col-md-6 dist-1">
                   <div class="row" style="justify-content: center">
-                    <div class="form-group fgd">
+                    <div class="form-group fgd col">
                       <label for="from_build_time">تاریخ ثبت</label>
                       <input
                         type="text"
@@ -125,7 +160,7 @@
                       />
                     </div>
                     <div class="mx-4" style="align-self: center">الی</div>
-                    <div class="form-group fgd">
+                    <div class="form-group fgd col">
                       <label for="to_build_time">تاریخ ثبت</label>
                       <input
                         type="text"
@@ -139,7 +174,7 @@
                 </div>
                 <div class="col-md-6 dist-1">
                   <div class="row" style="justify-content: center">
-                    <div class="form-group fgd">
+                    <div class="form-group fgd col">
                       <label for="from_build_time">تاریخ ساخت بنا</label>
                       <input
                         type="text"
@@ -151,7 +186,7 @@
                       />
                     </div>
                     <div class="mx-4" style="align-self: center">الی</div>
-                    <div class="form-group fgd">
+                    <div class="form-group fgd col">
                       <label for="to_build_time">تاریخ ساخت بنا</label>
                       <input
                         type="text"
@@ -198,6 +233,7 @@
                     @change="changeCategory($event)"
                     name="property_category_id"
                     class="form-control"
+                    v-model="form.property_category_id"
                   >
                     <option
                       :value="item.id"
@@ -216,6 +252,7 @@
                     @change="changeFeature($event)"
                     name="feature_id"
                     class="form-control"
+                    v-model="form.feature_id"
                   >
                     <option
                       v-for="(item, index) in features"
@@ -243,6 +280,8 @@
                         type="checkbox"
                         :id="'gridCheck' + index"
                         :value="item.id"
+                        :checked="form.sellTypes"
+                        v-model="form.sellTypes"
                       />
                       <label
                         class="form-check-label"
@@ -269,6 +308,8 @@
                         type="checkbox"
                         :id="'facilities' + index"
                         :value="item.id"
+                        :checked="form.facilities"
+                        v-model="form.facilities"
                       />
                       <label
                         class="form-check-label"
@@ -296,6 +337,8 @@
                         type="checkbox"
                         :id="'documenttype' + index"
                         :value="item.id"
+                        :checked="form.documentTypes"
+                        v-model="form.documentTypes"
                       />
                       <label
                         class="form-check-label"
@@ -316,7 +359,7 @@
                 style="flex-flow: inherit"
               >
                 <div class="col-md-6 col-sm-12 dist-1">
-                  <div class="row" style="align-items: center;">
+                  <div class="row" style="align-items: center">
                     <div class="col-md-5 col-sm-12">
                       <div class="form-group">
                         <label for="from_price">قیمت ملک به تومان</label>
@@ -351,7 +394,7 @@
                   </div>
                 </div>
                 <div class="col-md-6 col-sm-12 dist-2">
-                  <div class="row" style="align-items: center;">
+                  <div class="row" style="align-items: center">
                     <div class="col-md-5 col-sm-12">
                       <div class="form-group">
                         <label for="from_rent_price">قیمت اجاره به تومان</label>
@@ -485,6 +528,7 @@
                     v-model="form.special"
                     type="checkbox"
                     id="gridCheck"
+                    :checked="form.special"
                   />
                   <label
                     class="form-check-label"
@@ -503,14 +547,14 @@
                 جستجو
               </button>
             </div>
-            <div class="col">
+            <!-- <div class="col">
               <button
                 type="button"
                 class="btn btn-warning text-white btn-lg btn-block cus-btn"
               >
                 <router-link to="/amlak" class="text-white">بازگشت</router-link>
               </button>
-            </div>
+            </div> -->
             <div class="col">
               <button
                 type="button"
@@ -551,7 +595,6 @@ export default {
       cities: [],
       facilities: [],
       neighborhoods: [],
-      directions: [],
       documentTypes: [],
       viewstatus: "search",
       searchdata: [],
@@ -584,18 +627,19 @@ export default {
         sellTypes: [],
         neighborhoods: [],
         documentTypes: [],
-        direction_id: "",
+        is_north: null,
+        is_south: null,
+        is_west: null,
+        is_east: null,
         from_register_time: "",
         to_register_time: "",
       },
-      today: window.moment().format("jYYYY/jM/jD"),
+      today: window.moment().format("jYYYY/jMM/jDD"),
     };
   },
   components: { Panel, SearchResult },
   mounted() {
     this.allow = this.check();
-    if (!this.allow) return false;
-
     api
       .get("api/v1/data")
       .then((response) => {
@@ -604,9 +648,7 @@ export default {
         this.provinces = response.data.provinces;
         this.features = response.data.features;
         this.facilities = response.data.facilities;
-        this.directions = response.data.directions;
         this.documentTypes = response.data.documentTypes;
-        //this.neighborhoods = response.data.neighborhoods;
       })
       .catch((error) => console.log(error));
   },
@@ -617,10 +659,6 @@ export default {
         .replace(/\D/g, "")
         .replace(/\B(?=(\d{3})+(?!\d))/g, ",");
       this.$set(this.form, name, res);
-    },
-    setDirection(e) {
-      let id = e.target.value;
-      this.form.direction_id = id;
     },
     setNeighborhoodByCity(e) {
       if (e.target.checked) {
@@ -688,6 +726,7 @@ export default {
         .catch((error) => console.log(error));
     },
     handleSubmit() {
+      this.viewstatus = "search";
       let form = this.form;
       api
         .get("api/v1/data/search", {
@@ -732,7 +771,10 @@ export default {
         sellTypes: [],
         neighborhoods: [],
         documentTypes: [],
-        direction_id: "",
+        is_north: null,
+        is_south: null,
+        is_west: null,
+        is_east: null,
         from_register_time: "",
         to_register_time: "",
       };
@@ -743,7 +785,7 @@ export default {
       });
     },
     check() {
-      if (!this.findOne(this.roles, ["ml-adviser", "administrator"])) {
+      if (!this.findOne(this.roles, ["ml-adviser","ml-editor", "administrator"])) {
         // return this.$router.push("/error");
         return false;
       }
@@ -780,6 +822,9 @@ export default {
   /* Firefox 19+ */
   font-size: 13px !important;
 }
+select {
+  font-size: 13px;
+}
 .err {
   text-align: center;
   height: 100%;
@@ -808,7 +853,7 @@ export default {
   font-size: 20px;
   font-weight: bold;
   display: block;
-  width: 80%;
+  width: 100%;
   margin: 0 auto;
 }
 .distinct {

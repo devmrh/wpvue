@@ -36,7 +36,11 @@ class Property extends Model
     'special',
     'user_id',
     'direction_id',
-    'neighborhood_id'
+    'neighborhood_id',
+    'is_west',
+    'is_south',
+    'is_north',
+    'is_east'
   ];
 
   public function city()

@@ -23,6 +23,7 @@
               @change="changeCategory($event)"
               name="property_category_id"
               class="form-control"
+              v-model="form.property_category_id"
             >
               <option
                 :value="item.id"
@@ -41,6 +42,7 @@
               @change="changeSellType($event)"
               name="sell_type_id"
               class="form-control"
+              v-model="form.sell_type_id"
             >
               <option
                 v-for="(item, index) in sellTypes"
@@ -59,6 +61,7 @@
               @change="changeFeature($event)"
               name="feature_id"
               class="form-control"
+              v-model="form.feature_id"
             >
               <option
                 v-for="(item, index) in features"
@@ -111,24 +114,25 @@
           </div>
 
           <div class="col-md-6">
-          <div class="form-group">
-            <label for="doc">نوع سند</label>
-            <select
-              id="doc"
-              @change="changeDocument($event)"
-              name="document_id"
-              class="form-control"
-            >
-              <option
-                v-for="(item, index) in documentTypes"
-                :key="index"
-                :value="item.id"
+            <div class="form-group">
+              <label for="doc">نوع سند</label>
+              <select
+                id="doc"
+                @change="changeDocument($event)"
+                name="document_id"
+                class="form-control"
+                v-model="form.document_id"
               >
-                {{ item.name }}
-              </option>
-              <option value="">مشخص نشده</option>
-            </select>
-          </div>
+                <option
+                  v-for="(item, index) in documentTypes"
+                  :key="index"
+                  :value="item.id"
+                >
+                  {{ item.name }}
+                </option>
+                <option value="">مشخص نشده</option>
+              </select>
+            </div>
           </div>
         </div>
         <div class="form-group">
@@ -166,6 +170,8 @@
                   type="checkbox"
                   :id="'facilities' + index"
                   :value="item.id"
+                  :checked="form.facilities"
+                  v-model="form.facilities"
                 />
                 <label
                   class="form-check-label"
@@ -233,6 +239,7 @@
               id="province_id"
               @change="getCityByProvince($event)"
               class="form-control"
+              v-model="form.province_id"
             >
               <option
                 :value="item.id"
@@ -250,6 +257,7 @@
               id="city_id"
               @change="changeCity($event)"
               class="form-control"
+              v-model="form.city_id"
             >
               <option
                 v-for="(item, index) in cities"
@@ -267,6 +275,7 @@
               id="neighborhooh_id"
               @change="setNeighborhoodByCity($event)"
               class="form-control"
+              v-model="form.neighborhood_id"
             >
               <option
                 :value="item.id"
@@ -279,23 +288,53 @@
             </select>
           </div>
           <div class="form-group col-sm-12 col-md-6 direction">
-            <div
-              v-for="(item, index) in directions"
-              :key="index"
-              class="custom-control custom-radio custom-control-inline"
-            >
+            <div class="form-check">
               <input
-                @change="setDirection($event)"
-                type="radio"
-                :value="item.id"
-                :id="'customRadioInline1' + index"
+                v-model="form.is_north"
+                type="checkbox"
+                id="customRadioInline1"
                 name="customRadioInline1"
-                class="custom-control-input"
+                class="form-check-input"
+                :checked="form.is_north"
               />
-              <label
-                class="custom-control-label"
-                :for="'customRadioInline1' + index"
-                >{{ item.name }}</label
+              <label class="form-check-label" for="customRadioInline1"
+                >شمال</label
+              >
+            </div>
+            <div class="form-check">
+              <input
+                v-model="form.is_south"
+                type="checkbox"
+                id="customRadioInline2"
+                class="form-check-input"
+                :checked="form.is_south"
+              />
+              <label class="form-check-label" for="customRadioInline1"
+                >جنوب</label
+              >
+            </div>
+            <div class="form-check">
+              <input
+                v-model="form.is_west"
+                type="checkbox"
+                id="customRadioInline13"
+                class="form-check-input"
+                :checked="form.is_west"
+              />
+              <label class="form-check-label" for="customRadioInline13"
+                >غرب</label
+              >
+            </div>
+            <div class="form-check">
+              <input
+                v-model="form.is_east"
+                type="checkbox"
+                id="customRadioInline14"
+                class="form-check-input"
+                :checked="form.is_east"
+              />
+              <label class="form-check-label" for="customRadioInline14"
+                >شرق</label
               >
             </div>
           </div>
@@ -407,6 +446,7 @@
               v-model="form.special"
               type="checkbox"
               id="gridCheck"
+              :checked="form.special"
             />
             <label class="form-check-label" name="special" for="gridCheck">
               ویژه؟
@@ -438,7 +478,6 @@ export default {
       features: [],
       cities: [],
       facilities: [],
-      directions: [],
       neighborhoods: [],
       documentTypes: [],
       form: {
@@ -465,9 +504,12 @@ export default {
         address: null,
         description: null,
         special: null,
+        is_north: null,
+        is_south: null,
+        is_west: null,
+        is_east: null,
         facilities: [],
         user_id: null,
-        direction_id: null,
       },
       info: "",
       err: "",
@@ -483,10 +525,6 @@ export default {
         .replace(/\D/g, "")
         .replace(/\B(?=(\d{3})+(?!\d))/g, ",");
       this.$set(this.form, name, res);
-    },
-    setDirection(e) {
-      let id = e.target.value;
-      this.form.direction_id = id;
     },
     checkFacility(e) {
       if (e.target.checked) {
@@ -570,10 +608,12 @@ export default {
             build_time: null,
             address: null,
             description: null,
+            is_north: null,
+            is_south: null,
+            is_west: null,
+            is_east: null,
             special: null,
             facilities: [],
-            user_id: null,
-            direction_id: null,
           };
         })
         .catch((e) => {
@@ -590,7 +630,6 @@ export default {
         this.provinces = response.data.provinces;
         this.features = response.data.features;
         this.facilities = response.data.facilities;
-        this.directions = response.data.directions;
         this.documentTypes = response.data.documentTypes;
       })
       .catch((error) => console.log(error));
